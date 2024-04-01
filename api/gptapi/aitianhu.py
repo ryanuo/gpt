@@ -10,7 +10,7 @@ class RequestHandler:
             "Accept-Language": "zh-CN,zh;q=0.9",
             "Cache-Control": "no-cache",
             "Content-Type": "application/json",
-            "Cookie": "sl-session=HFUGNlzzC2avL+jCw6uDbg==; sl_jwt_session=Wmw5NPCvCmZW2ppxrAkTXw==; cdn=aitianhu; SERVERID=srv99n2|Zgqiz",
+            "Cookie": "sl-session=HFUGNlzzC2avL+jCw6uDbg==; sl_jwt_session=Wmw5NPCvCmZW2ppxrAkTXw==; cdn=aitianhu;",
             "Origin": "https://lhfjha.aitianhu1.top",
             "Pragma": "no-cache",
             "Referer": "https://lhfjha.aitianhu1.top/",
@@ -29,7 +29,7 @@ class RequestHandler:
                 self.url,
                 json={
                     "prompt": data["prompt"],
-                    "options": data["options"] | {},
+                    "options": {},
                     "model": "gpt-3.5-turbo",
                     "OPENAI_API_KEY": "sk-AItianhuFreeForEveryone",
                     "systemMessage": "你是一个人工智能助理，一个受过训练的大型语言模型。请仔细遵循用户的说明。使用markdown进行响应。",
