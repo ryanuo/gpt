@@ -10,7 +10,7 @@ class RequestHandler:
             "Accept-Language": "zh-CN,zh;q=0.9",
             "Cache-Control": "no-cache",
             "Content-Type": "application/json",
-            "Cookie": "sl-session=HFUGNlzzC2avL+jCw6uDbg==; sl_jwt_session=Wmw5NPCvCmZW2ppxrAkTXw==; cdn=aitianhu;",
+            "Cookie": "sl-session=BpY2TGsYDGa33aphZSKCtg==; sl_jwt_session=L4sFPwTVCmbDC/GKg4RAyA==; cdn=aitianhu;",
             "Origin": "https://lhfjha.aitianhu1.top",
             "Pragma": "no-cache",
             "Referer": "https://lhfjha.aitianhu1.top/",
