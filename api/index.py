@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 
-from gptapi.aitianhu import RequestHandler
+from .gptapi.aitianhu import RequestHandler
 
 app = Flask(__name__)
 
