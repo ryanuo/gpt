@@ -17,7 +17,3 @@ def process_request():
 @app.route("/", methods=["GET"])
 def hello():
     return "部署成功开始使用吧！"
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
