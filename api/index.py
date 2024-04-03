@@ -10,7 +10,7 @@ app = Flask(__name__)
 aitianhu_request_handler = RequestHandler()
 chat_api = NexraChatAPI()
 engine = g4f.client.Client()
-CORS(app, resources={r"/g4f/*": {"origins": "https://mr90.top.com"}})
+CORS(app, resources={r"/g4f/*": {"origins": "https://mr90.top"}})
 
 
 @app.route("/g4f/generate_completion", methods=["POST"])
