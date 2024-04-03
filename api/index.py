@@ -1,10 +1,35 @@
 from flask import Flask, request, jsonify
-
+from g4f.client import Client
+import g4f
+from .gptapi.nexrachat import NexraChatAPI
 from .gptapi.aitianhu import RequestHandler
 
 app = Flask(__name__)
 
 aitianhu_request_handler = RequestHandler()
+chat_api = NexraChatAPI()
+engine = g4f.client.Client()
+
+
+@app.route("/g4f/generate_completion", methods=["POST"])
+def generate_completion():
+    # 获取请求中的用户消息内容
+    message = request.json.get("message")
+
+    # 使用 g4f 客户端生成对话完成结果
+    completion = engine.chat.completions.create(model="openchat_3.5", messages=message)
+
+    # 获取对话完成结果中的内容并返回
+    completion_content = completion.choices[0].message.content
+    return jsonify({"completion": completion_content})
+
+
+@app.route(f"/model/(.*?)/", methods=["POST"])
+def send_request():
+    model = request.url.split("/")[4]  # Extract the model from the URL
+    data = request.get_json()
+
+    return jsonify(NexraChatAPI.send_message(messages=data, model=model))
 
 
 @app.route("/aitianhu", methods=["POST"])
