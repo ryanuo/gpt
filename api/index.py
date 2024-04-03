@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from g4f.client import Client
 import g4f
 from .gptapi.nexrachat import NexraChatAPI
@@ -9,25 +10,11 @@ app = Flask(__name__)
 aitianhu_request_handler = RequestHandler()
 chat_api = NexraChatAPI()
 engine = g4f.client.Client()
-
-
-# 定义允许访问的主域名
-ALLOWED_DOMAIN = "mr90.top"
-
-
-def check_domain():
-    referrer = request.referrer
-    if not referrer:
-        return False
-    if referrer.endswith(ALLOWED_DOMAIN) or referrer.endswith(".mr90.top"):
-        return True
-    return False
+CORS(app, resources={r"/g4f/*": {"origins": "https://mr90.top.com"}})
 
 
 @app.route("/g4f/generate_completion", methods=["POST"])
 def generate_completion():
-    if not check_domain():
-        return "Unauthorized domain", 403
     # 获取请求中的用户消息内容
     message = request.json.get("message")
 
