@@ -21,7 +21,7 @@ def generate_completion():
 
     # 获取对话完成结果中的内容并返回
     completion_content = completion.choices[0].message.content
-    return jsonify({"completion": completion_content})
+    return jsonify({"data": completion_content, "status_code": 200})
 
 
 @app.route(f"/model/(.*?)/", methods=["POST"])
