@@ -1,12 +1,10 @@
 import requests
 import json
 
-url = "https://nexra.aryahcr.cc/api/chat/complements"
-
 
 class NexraChatAPI:
-    def __init__(self, url, proxies=None):
-        self.url = url
+    def __init__(self, proxies=None):
+        self.url = "https://nexra.aryahcr.cc/api/chat/complements"
         self.proxies = proxies
         self.headers = {"Content-Type": "application/json"}
 
