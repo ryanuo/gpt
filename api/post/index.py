@@ -28,9 +28,10 @@ def webhook_post():
 
 
 def get_url_post_text(url) -> str:
-    # 加载JSON文件并获取对应的文本
-    with open(json_file_path, "r") as f:
-        url_text_map = json.load(f)  # 加载JSON数据到字典
-        f.close()  # 显式关闭文件
-    text = url_text_map[url]  # 从字典中获取对应URL的文本
-    return text
+    # 获取 JSON 数据
+    data = requests.get("https://mr90.top/sitemap.json").json()
+    # 遍历每个条目
+    for item in data["items"]:
+        # 提取 URL 和文本内容，并存储到字典中
+        if item["url"] == url:
+            return item["text"]
