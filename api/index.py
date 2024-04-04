@@ -12,7 +12,7 @@ app = Flask(__name__)
 aitianhu_request_handler = RequestHandler()
 chat_api = NexraChatAPI()
 engine = g4f.client.Client()
-CORS(app, resources={r"/g4f/*": {"origins": "https://mr90.top"}})
+CORS(app, resources={r"/*": {"origins": "https://mr90.top"}})
 
 g4f_model_list = [
     "gpt-3.5-turbo",
