@@ -3,7 +3,7 @@ from flask_cors import CORS
 from g4f.client import Client
 import g4f
 
-from .gptapi.wxchat import handle_text_message, verify_signature
+from .gptapi.wxchat import handle_text_message, verify_signature, subscribe_reply
 from wechatpy.exceptions import InvalidMchIdException
 from wechatpy import parse_message, create_reply
 from .post.index import get_url_post_text, webhook_post
@@ -128,6 +128,10 @@ def wechat():
             if msg.type == "text":
                 reply_content = handle_text_message(msg, engine)
                 reply = create_reply(reply_content, msg)
+                return reply.render()
+            if msg.type == 'subscribe':
+                reply = subscribe_reply(msg)
+                reply = create_reply(reply, msg)
                 return reply.render()
             else:
                 return "Unsupported message type.", 400
