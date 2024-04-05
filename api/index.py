@@ -129,9 +129,8 @@ def wechat():
                 reply_content = handle_text_message(msg, engine)
                 reply = create_reply(reply_content, msg)
                 return reply.render()
-            if msg.type == 'subscribe':
-                reply = subscribe_reply(msg)
-                reply = create_reply(reply, msg)
+            if msg.event == "subscribe":
+                reply = create_reply(subscribe_reply(), msg)
                 return reply.render()
             else:
                 return "Unsupported message type.", 400
