@@ -3,7 +3,7 @@ from wechatpy.exceptions import InvalidSignatureException
 from wechatpy.utils import check_signature
 from flask import request
 
-token = "wx-token"  # 设置你的微信公众号的token
+token = "wxToken"  # 设置你的微信公众号的token
 
 
 def verify_signature():
