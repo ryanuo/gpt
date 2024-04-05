@@ -18,7 +18,7 @@ def verify_signature():
 
 
 def handle_text_message(msg, engine):
-    user_message = msg.strip()
+    user_message = msg.content.strip()
     model = "openchat_3.5"  # 设置默认的模型
 
     # 使用 g4f 客户端生成对话完成结果
