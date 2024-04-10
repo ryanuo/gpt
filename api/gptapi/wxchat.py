@@ -1,3 +1,5 @@
+from typing import List
+
 from wechatpy import parse_message, create_reply
 from wechatpy.exceptions import InvalidSignatureException
 from wechatpy.utils import check_signature
@@ -17,28 +19,46 @@ def verify_signature():
         return "Invalid signature.", 400
 
 
-def handle_text_message(msg, engine):
+def get_message(current_question, messages: List):
+    if len(messages) == 0:
+        return [
+            {
+                "role": "assistant",
+                "content": "你是[今日在学]微信公众号的智能机器人,"
+                           "你的主人是Ryan，他的主页是<a href='https://mr90.top'>Home</a>，"
+                           "请根据用户的问题给出一个回答。",
+            },
+            {"role": "user", "content": f"{current_question},50-100字回答。"},
+        ]
+    messages.append({"role": "user", "content": f"{current_question},50-100字回答。"},)
+    return messages
+
+
+def handle_text_message(msg, engine, ms_lists=None):
+    if ms_lists is None:
+        ms_lists = []
+
     user_message = msg.content.strip()
     model = "openchat_3.5"  # 设置默认的模型
+    messages = get_message(user_message, ms_lists)
+    print(len(messages))
 
     # 使用 g4f 客户端生成对话完成结果
     completion = engine.chat.completions.create(
         model=model,
-        messages=[
-            {
-                "role": "assistant",
-                "content": "你是[今日在学]微信公众号的智能机器人,"
-                "你的主人是Ryan，他的主页是<a href='https://mr90.top'>Home</a>，"
-                "请根据用户的问题给出一个回答。",
-            },
-            {"role": "user", "content": f"{user_message},50-100字回答。"},
-        ],
+        messages=messages,
     )
 
     # 获取对话完成结果中的内容
     completion_content = completion.choices[0].message.content
+    messages.append({
+        "role": "assistant", "content": completion_content
+    })
 
-    return completion_content
+    if len(messages) > 30:
+        messages = []
+    return completion_content, messages
+
 
 
 def subscribe_reply():

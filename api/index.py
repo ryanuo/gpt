@@ -116,6 +116,9 @@ def hello():
     return "部署成功开始使用吧！"
 
 
+Session = {}
+
+
 @app.route("/wechat", methods=["GET", "POST"])
 def wechat():
     if request.method == "GET":
@@ -126,8 +129,10 @@ def wechat():
         try:
             msg = parse_message(request.data)
             if msg.type == "text":
-                reply_content = handle_text_message(msg, engine)
+                openid = msg.source
+                reply_content, messages = handle_text_message(msg, engine, Session.get(openid, []))
                 reply = create_reply(reply_content, msg)
+                Session[openid] = messages
                 return reply.render()
             if msg.event == "subscribe":
                 reply = create_reply(subscribe_reply(), msg)
