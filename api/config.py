@@ -32,4 +32,4 @@ g4f_model_list = [
     "pi",
 ]
 
-default_model = "gpt-4-32k"
+default_model = "gpt-3.5-turbo"

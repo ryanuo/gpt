@@ -26,7 +26,7 @@ def get_message(current_question, messages: List):
             {
                 "role": "assistant",
                 "content": "你是[今日在学]微信公众号的智能机器人,"
-                "你的主人是Ryan，他的主页是<a href='https://mr90.top'>Home</a>，"
+                "你的主人是Ryan，他的主页是https://mr90.top"
                 "请根据用户的问题给出一个回答。",
             },
             {"role": "user", "content": f"{current_question},50-100字回答。"},
