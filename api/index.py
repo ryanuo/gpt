@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from g4f.client import Client
-import g4f
 
 from .gptapi.wxchat import handle_text_message, verify_signature, subscribe_reply
 from wechatpy.exceptions import InvalidMchIdException
@@ -14,7 +13,7 @@ app = Flask(__name__)
 
 aitianhu_request_handler = RequestHandler()
 chat_api = NexraChatAPI()
-engine = g4f.client.Client()
+client = Client()
 CORS(app, resources={r"/*": {"origins": "https://mr90.top"}})
 
 g4f_model_list = [
@@ -60,7 +59,7 @@ def generate_completion(model):
     message = request.json.get("message")
 
     # 使用 g4f 客户端生成对话完成结果
-    completion = engine.chat.completions.create(model=model, messages=message)
+    completion = client.chat.completions.create(model=model, messages=message)
 
     # 获取对话完成结果中的内容并返回
     completion_content = completion.choices[0].message.content
@@ -82,12 +81,12 @@ def ai_post():
     ]
 
     # 使用 g4f 客户端生成对话完成结果
-    completion = engine.chat.completions.create(model="openchat_3.5", messages=message)
+    completion = client.chat.completions.create(model="gpt-3.5-turbo", messages=message)
 
     # 获取对话完成结果中的内容并返回
     completion_content = completion.choices[0].message.content
     return jsonify(
-        {"data": completion_content, "status_code": 200, "model": "openchat_3.5"}
+        {"data": completion_content, "status_code": 200, "model": "gpt-3.5-turbo"}
     )
 
 
@@ -130,7 +129,9 @@ def wechat():
             msg = parse_message(request.data)
             if msg.type == "text":
                 openid = msg.source
-                reply_content, messages = handle_text_message(msg, engine, Session.get(openid, []))
+                reply_content, messages = handle_text_message(
+                    msg, client, Session.get(openid, [])
+                )
                 reply = create_reply(reply_content, msg)
                 Session[openid] = messages
                 return reply.render()

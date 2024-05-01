@@ -25,12 +25,14 @@ def get_message(current_question, messages: List):
             {
                 "role": "assistant",
                 "content": "你是[今日在学]微信公众号的智能机器人,"
-                           "你的主人是Ryan，他的主页是<a href='https://mr90.top'>Home</a>，"
-                           "请根据用户的问题给出一个回答。",
+                "你的主人是Ryan，他的主页是<a href='https://mr90.top'>Home</a>，"
+                "请根据用户的问题给出一个回答。",
             },
             {"role": "user", "content": f"{current_question},50-100字回答。"},
         ]
-    messages.append({"role": "user", "content": f"{current_question},50-100字回答。"},)
+    messages.append(
+        {"role": "user", "content": f"{current_question},50-100字回答。"},
+    )
     return messages
 
 
@@ -51,14 +53,11 @@ def handle_text_message(msg, engine, ms_lists=None):
 
     # 获取对话完成结果中的内容
     completion_content = completion.choices[0].message.content
-    messages.append({
-        "role": "assistant", "content": completion_content
-    })
+    messages.append({"role": "assistant", "content": completion_content})
 
     if len(messages) > 30:
         messages = []
     return completion_content, messages
-
 
 
 def subscribe_reply():
@@ -68,5 +67,5 @@ def subscribe_reply():
         "🤖 我是你的AI小助手小盆友，有啥问题都可以问我哦！我虽然聪明，但是也有点小调皮，所以问的问题越滑稽，我回答得也会越有趣呦~\n"
         "🚀 除了知识分享，我还会不定期为大家带来一些个人项目的心得体会，希望能够启发到你们，当然，如果你们有什么好玩的项目也可以分享给我哦！\n"
         "🏡 欢迎来我的主页<a href='https://mr90.top'>Home</a>，这里有更多有趣的内容等着你！记得点个关注哦，别错过了！\n"
-        "😉 快来和我一起探索知识的海洋吧！记得多多互动，我可是一个等着你们来调戏的机器人哦，目前只支持一问一答~😜"
+        "😉 快来和我一起探索知识的海洋吧！记得多多互动，我可是一个等着你们来调戏的机器人哦~😜"
     )
