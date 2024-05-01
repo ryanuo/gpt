@@ -4,7 +4,7 @@ from wechatpy import parse_message, create_reply
 from wechatpy.exceptions import InvalidSignatureException
 from wechatpy.utils import check_signature
 from flask import request
-from config import default_model
+from api.config import default_model
 
 token = "wxToken"  # 设置你的微信公众号的token
 
