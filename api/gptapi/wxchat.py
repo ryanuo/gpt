@@ -4,6 +4,7 @@ from wechatpy import parse_message, create_reply
 from wechatpy.exceptions import InvalidSignatureException
 from wechatpy.utils import check_signature
 from flask import request
+from config import default_model
 
 token = "wxToken"  # 设置你的微信公众号的token
 
@@ -41,7 +42,7 @@ def handle_text_message(msg, engine, ms_lists=None):
         ms_lists = []
 
     user_message = msg.content.strip()
-    model = "gpt-3.5-turbo"  # 设置默认的模型
+    model = default_model  # 设置默认的模型
     messages = get_message(user_message, ms_lists)
     print(len(messages))
 
