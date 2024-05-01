@@ -1,5 +1,5 @@
 requests~=2.31.0
 Flask~=3.0.2
-g4f~=0.2.7.1
+g4f
 flask_cors
 wechatpy~=1.8.18
