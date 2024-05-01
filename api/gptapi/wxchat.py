@@ -41,7 +41,7 @@ def handle_text_message(msg, engine, ms_lists=None):
         ms_lists = []
 
     user_message = msg.content.strip()
-    model = "openchat_3.5"  # 设置默认的模型
+    model = "gpt-3.5-turbo"  # 设置默认的模型
     messages = get_message(user_message, ms_lists)
     print(len(messages))
 
