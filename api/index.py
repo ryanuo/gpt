@@ -11,7 +11,7 @@ from .config import g4f_model_list, default_model
 app = Flask(__name__)
 
 client = Client()
-CORS(app, resources={r"/*": {"origins": "https://mr90.top"}})
+CORS(app, resources={r"/*": {"origins": "https://ryanuo.cc"}})
 
 
 @app.route("/g4f/<path:model>", methods=["POST"])
