@@ -54,6 +54,8 @@ def handle_text_message(msg, engine, ms_lists=None):
 
     # 获取对话完成结果中的内容
     completion_content = completion.choices[0].message.content
+    if completion_content.find("chatkf123") != -1:
+        completion_content = 'sorry, please retry later....'
     messages.append({"role": "assistant", "content": completion_content})
 
     if len(messages) > 30:
