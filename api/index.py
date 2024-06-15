@@ -7,6 +7,7 @@ from wechatpy.exceptions import InvalidMchIdException
 from wechatpy import parse_message, create_reply
 from .post.index import get_url_post_text
 from .config import g4f_model_list, default_model
+from .utils import handle_ai_response
 
 app = Flask(__name__)
 
@@ -25,7 +26,8 @@ def generate_completion(model):
     completion = client.chat.completions.create(model=model, messages=message)
 
     # 获取对话完成结果中的内容并返回
-    completion_content = completion.choices[0].message.content
+    completion_content = handle_ai_response(completion.choices[0].message.content)
+
     return jsonify({"data": completion_content, "status_code": 200})
 
 
@@ -47,7 +49,7 @@ def ai_post():
     completion = client.chat.completions.create(model=default_model, messages=message)
 
     # 获取对话完成结果中的内容并返回
-    completion_content = completion.choices[0].message.content
+    completion_content = handle_ai_response(completion.choices[0].message.content)
     return jsonify(
         {"data": completion_content, "status_code": 200, "model": default_model}
     )

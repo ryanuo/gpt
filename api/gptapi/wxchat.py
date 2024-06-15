@@ -5,6 +5,7 @@ from wechatpy.exceptions import InvalidSignatureException
 from wechatpy.utils import check_signature
 from flask import request
 from api.config import default_model
+from api.utils import handle_ai_response
 
 token = "wxToken"  # 设置你的微信公众号的token
 
@@ -53,9 +54,7 @@ def handle_text_message(msg, engine, ms_lists=None):
     )
 
     # 获取对话完成结果中的内容
-    completion_content = completion.choices[0].message.content
-    if completion_content.find("chatkf123") != -1:
-        completion_content = 'sorry, please retry later....'
+    completion_content = handle_ai_response(completion.choices[0].message.content)
     messages.append({"role": "assistant", "content": completion_content})
 
     if len(messages) > 30:
