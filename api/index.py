@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from g4f.client import Client
+
 
 from .gptapi.wxchat import handle_text_message, verify_signature, subscribe_reply
 from wechatpy.exceptions import InvalidMchIdException
@@ -14,6 +15,10 @@ app = Flask(__name__)
 client = Client()
 CORS(app, resources={r"/*": {"origins": "https://ryanuo.cc"}})
 
+
+@app.route('/models', methods=['GET'])
+def get_models():
+    return jsonify(g4f_model_list)
 
 @app.route("/g4f/<path:model>", methods=["POST"])
 def generate_completion(model):
@@ -57,11 +62,10 @@ def ai_post():
 
 @app.route("/", methods=["GET"])
 def hello():
-    return "部署成功开始使用吧！"
+    return render_template("index.html")
 
 
 Session = {}
-
 
 @app.route("/wechat", methods=["GET", "POST"])
 def wechat():
@@ -87,3 +91,6 @@ def wechat():
                 return "Unsupported message type.", 400
         except InvalidMchIdException:
             return "Invalid message.", 400
+
+# if __name__ == "__main__":
+#     app.run(host="0.0.0.0", port=5001, debug=True)

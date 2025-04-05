@@ -1,35 +1,6 @@
-g4f_model_list = [
-    "gpt-3.5-turbo",
-    "gpt-3.5-turbo-0613",
-    "gpt-3.5-turbo-16k",
-    "gpt-3.5-turbo-16k-0613",
-    "gpt-3.5-long",
-    "gpt-4",
-    "gpt-4-0613",
-    "gpt-4-32k",
-    "gpt-4-32k-0613",
-    "gpt-4-turbo",
-    "llama2-7b",
-    "llama2-13b",
-    "llama2-70b",
-    "codellama-34b-instruct",
-    "codellama-70b-instruct",
-    "gigachat",
-    "gigachat_plus",
-    "gigachat_pro",
-    "mixtral-8x7b",
-    "mistral-7b",
-    "dolphin-mixtral-8x7b",
-    "lzlv-70b",
-    "airoboros-70b",
-    "airoboros-l2-70b",
-    "openchat_3.5",
-    "gemini",
-    "gemini-pro",
-    "claude-v2",
-    "claude-3-opus",
-    "claude-3-sonnet",
-    "pi",
-]
+from g4f.models import ModelUtils 
 
-default_model = "gpt-3.5-turbo"
+models = ModelUtils()
+
+g4f_model_list = list(models.convert)
+default_model = "gpt-4o-mini"

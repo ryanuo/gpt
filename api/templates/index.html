@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 接口测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background-color: #e8f5e9;
+            padding: 10px;
+            border: 1px solid #c8e6c9;
+            border-radius: 4px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+        }
+        select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        option {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI 接口测试</h1>
+    <label for="model">模型名称:</label>
+    <select id="model">
+        <option value="gpt-4o-mini" selected>gpt-4o-mini</option>
+        <option value="" disabled>请选择模型</option>
+    </select>
+    <br>
+    <label for="message">消息内容:</label>
+    <textarea id="message" placeholder="输入消息内容"></textarea>
+    <br>
+    <button id="testButton">测试</button>
+    <p id="result">暂无....</p>
+
+    <script>
+        async function loadModels() {
+            try {
+                const response = await fetch('/models');
+                const models = await response.json();
+                const modelSelect = document.getElementById('model');
+                models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    if (model === 'gpt-4o-mini') {
+                        option.selected = true;
+                    }
+                    modelSelect.appendChild(option);
+                });
+            } catch (error) {
+                alert('无法加载模型列表: ' + error.message);
+            }
+        }
+
+        document.getElementById('testButton').addEventListener('click', async () => {
+            const testButton = document.getElementById('testButton');
+            const model = document.getElementById('model').value;
+            const message = document.getElementById('message').value;
+
+            if (!model || !message) {
+                alert('请填写模型名称和消息内容');
+                return;
+            }
+
+            // 显示加载状态
+            testButton.disabled = true;
+            testButton.textContent = '加载中...';
+
+            try {
+                const response = await fetch(`/g4f/${model}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: [{ role: 'user', content: message }] }),
+                });
+
+                const result = await response.json();
+                document.getElementById('result').innerText = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('result').innerText = '请求失败: ' + error.message;
+            } finally {
+                // 恢复按钮状态
+                testButton.disabled = false;
+                testButton.textContent = '测试';
+            }
+        });
+
+        // 页面加载时调用
+        loadModels();
+    </script>
+</body>
+</html>
