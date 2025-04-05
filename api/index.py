@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from g4f.client import Client
 
-
 from .gptapi.wxchat import handle_text_message, verify_signature, subscribe_reply
 from wechatpy.exceptions import InvalidMchIdException
 from wechatpy import parse_message, create_reply
@@ -11,10 +10,8 @@ from .config import g4f_model_list, default_model
 from .utils import handle_ai_response
 
 app = Flask(__name__)
-
 client = Client()
 CORS(app, resources={r"/*": {"origins": "https://ryanuo.cc"}})
-
 
 @app.route('/models', methods=['GET'])
 def get_models():
@@ -24,6 +21,7 @@ def get_models():
 def generate_completion(model):
     if model not in g4f_model_list:
         return jsonify({"error": "Invalid model"})
+
     # 获取请求中的用户消息内容
     message = request.json.get("message")
 
@@ -32,21 +30,17 @@ def generate_completion(model):
 
     # 获取对话完成结果中的内容并返回
     completion_content = handle_ai_response(completion.choices[0].message.content)
-
     return jsonify({"data": completion_content, "status_code": 200})
-
 
 @app.route("/ai-post", methods=["POST"])
 def ai_post():
     url = request.headers.get("Refererurl")
     if not url:
         return jsonify({"error": "Invalid url"})
+
     text = get_url_post_text(url)
     message = [
-        {
-            "role": "assistant",
-            "content": "概括以下内容,50个字数左右,不要超出文字字数限制",
-        },
+        {"role": "assistant", "content": "概括以下内容,50个字数左右,不要超出文字字数限制"},
         {"role": "user", "content": text},
     ]
 
@@ -55,15 +49,11 @@ def ai_post():
 
     # 获取对话完成结果中的内容并返回
     completion_content = handle_ai_response(completion.choices[0].message.content)
-    return jsonify(
-        {"data": completion_content, "status_code": 200, "model": default_model}
-    )
-
+    return jsonify({"data": completion_content, "status_code": 200, "model": default_model})
 
 @app.route("/", methods=["GET"])
 def hello():
     return render_template("index.html")
-
 
 Session = {}
 
@@ -84,11 +74,12 @@ def wechat():
                 reply = create_reply(reply_content, msg)
                 Session[openid] = messages
                 return reply.render()
+
             if msg.event == "subscribe":
                 reply = create_reply(subscribe_reply(), msg)
                 return reply.render()
-            else:
-                return "Unsupported message type.", 400
+
+            return "Unsupported message type.", 400
         except InvalidMchIdException:
             return "Invalid message.", 400
 
