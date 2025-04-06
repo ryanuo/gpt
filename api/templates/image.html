@@ -48,6 +48,7 @@
         }
 
         #result {
+            width: 220px; /* 限制宽度为220 */
             margin-top: 20px;
             white-space: pre-wrap;
             background-color: #e8f5e9;
@@ -59,7 +60,8 @@
         img {
             border: 1px solid #ccc;
             border-radius: 4px;
-            max-width: 100%;
+            max-width: 200px; /* 限制宽度为200 */
+            max-height: 200px; /* 限制高度为200 */
         }
 
         nav {
@@ -85,10 +87,8 @@
         }
 
         .history-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 10px;
+            display: inline-block; /* 修改为行内块显示 */
+            margin: 10px; /* 调整间距 */
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -96,22 +96,9 @@
         }
 
         .history-item img {
-            max-width: 100px;
-            max-height: 100px;
-            margin-right: 10px;
-        }
-
-        .history-item button {
-            background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .history-item button:hover {
-            background-color: #d32f2f;
+            max-width: 200px; /* 限制宽度为200 */
+            max-height: 200px; /* 限制高度为200 */
+            margin: 0; /* 移除额外间距 */
         }
     </style>
 </head>
@@ -127,10 +114,8 @@
         <button type="submit">Generate</button>
         <div id="loading">Loading...</div>
     </form>
-    <div id="result">
-        <h2>Generated Image:</h2>
-        <img id="generated-image" src="" alt="Generated Image" style="display:none;">
-    </div>
+    
+    <div id="result"><img id="generated-image" src="" alt="Generated Image" style="display:none;"></div>
     <h2>History:</h2>
     <div id="history"></div>
     <script>
@@ -172,9 +157,6 @@
             historyItem.className = 'history-item';
             historyItem.innerHTML = `
                 <img src="${imageUrl}" alt="Generated Image">
-                <div>
-                    <button onclick="removeHistoryItem(this)">Delete</button>
-                </div>
             `;
             historyDiv.appendChild(historyItem);
         }
