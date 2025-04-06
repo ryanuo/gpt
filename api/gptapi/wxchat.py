@@ -37,21 +37,24 @@ def get_message(current_question, messages: List):
     )
     return messages
 
+
 def handle_image_message(msg, engine):
     # 处理图像生成请求
     prompt = msg.content[3:]
     response = engine.images.generate(
         model="flux",
         prompt=prompt,
-        response_format="url"  # 修改为返回 Base64 编码的图片
+        response_format="url",  # 修改为返回 Base64 编码的图片
     )
     if response and response.data:
         url = response.data[0].url
-        reply = create_reply(url, msg)  # 指定消息类型为图片
+        reply = create_reply(f"""image generated successfully, click to view:\n<a href="{url}">View</a>；""",
+            msg,
+        )  # 指定消息类型为图片
         return reply.render()
     else:
         return "Failed to generate image", 500
-                    
+
 
 def handle_text_message(msg, engine, ms_lists=None):
     if ms_lists is None:
