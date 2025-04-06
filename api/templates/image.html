@@ -158,7 +158,7 @@
             historyItem.innerHTML = `
                 <img src="${imageUrl}" alt="Generated Image">
             `;
-            historyDiv.appendChild(historyItem);
+            historyDiv.insertBefore(historyItem, historyDiv.firstChild); // 插入到历史记录的最前面
         }
 
         function removeHistoryItem(button) {
