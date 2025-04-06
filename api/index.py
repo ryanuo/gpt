@@ -98,7 +98,7 @@ def wechat():
         try:
             msg = parse_message(request.data)
             if msg.type == "text":
-                if msg.content.startswith("/image"):
+                if msg.content.startswith("/i"):
                    return handle_image_message(msg, client)
                 # 处理文本消息
                 openid = msg.source

@@ -1,6 +1,6 @@
 from typing import List
 
-from wechatpy import parse_message, create_reply
+from wechatpy import create_reply
 from wechatpy.exceptions import InvalidSignatureException
 from wechatpy.utils import check_signature
 from flask import request
@@ -39,15 +39,15 @@ def get_message(current_question, messages: List):
 
 def handle_image_message(msg, engine):
     # 处理图像生成请求
-    prompt = msg.content[7:]
+    prompt = msg.content[3:]
     response = engine.images.generate(
         model="flux",
         prompt=prompt,
-        response_format="b64_json"  # 修改为返回 Base64 编码的图片
+        response_format="url"  # 修改为返回 Base64 编码的图片
     )
     if response and response.data:
-        image_base64 = response.data[0].b64_json
-        reply = create_reply(image_base64, msg, message_type="image")  # 指定消息类型为图片
+        url = response.data[0].url
+        reply = create_reply(url, msg)  # 指定消息类型为图片
         return reply.render()
     else:
         return "Failed to generate image", 500
