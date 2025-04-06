@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from g4f.client import Client
 
-from .gptapi.wxchat import handle_text_message, verify_signature, subscribe_reply
+from .gptapi.wxchat import handle_text_message, verify_signature, subscribe_reply,handle_image_message
 from wechatpy.exceptions import InvalidMchIdException
 from wechatpy import parse_message, create_reply
 from .post.index import get_url_post_text
@@ -98,6 +98,9 @@ def wechat():
         try:
             msg = parse_message(request.data)
             if msg.type == "text":
+                if msg.content.startswith("/image"):
+                   return handle_image_message(msg, client)
+                # 处理文本消息
                 openid = msg.source
                 reply_content, messages = handle_text_message(
                     msg, client, Session.get(openid, [])

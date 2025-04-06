@@ -37,6 +37,21 @@ def get_message(current_question, messages: List):
     )
     return messages
 
+def handle_image_message(msg, engine):
+    # 处理图像生成请求
+    prompt = msg.content[7:]
+    response = engine.chat.images.generate(
+        model="flux",
+        prompt=prompt,
+        response_format="b64_json"  # 修改为返回 Base64 编码的图片
+    )
+    if response and response.data:
+        image_base64 = response.data[0].b64_json
+        reply = create_reply(image_base64, msg, message_type="image")  # 指定消息类型为图片
+        return reply.render()
+    else:
+        return "Failed to generate image", 500
+                    
 
 def handle_text_message(msg, engine, ms_lists=None):
     if ms_lists is None:
