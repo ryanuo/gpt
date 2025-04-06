@@ -67,9 +67,26 @@
             padding: 10px;
             font-size: 16px;
         }
+        nav {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
+    <nav>
+        <a href="/">AI 接口测试</a> |
+        <a href="/image">生成图片</a>
+    </nav>
     <h1>AI 接口测试</h1>
     <label for="model">模型名称:</label>
     <select id="model">

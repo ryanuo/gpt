@@ -63,6 +63,29 @@ def ai_post():
 def hello():
     return render_template("index.html")
 
+@app.route("/image", methods=["GET"])
+def generate_image():
+    # 返回生成的图像 URL
+    return render_template("image.html")
+
+@app.route("/generate-image", methods=["POST"])
+def generate_image_post():  # Renamed to avoid conflict
+    # 从请求中获取提示词
+    prompt = request.json.get("prompt", "a white siamese cat")
+    
+    # 使用 g4f 客户端生成图像
+    response = client.images.generate(
+        model="flux",
+        prompt=prompt,
+        response_format="url"
+    )
+    
+    # 返回生成的图像 URL
+    if response and response.data:
+        return jsonify({"image_url": response.data[0].url, "status_code": 200})
+    else:
+        return jsonify({"error": "Failed to generate image", "status_code": 500})
+
 Session = {}
 
 @app.route("/wechat", methods=["GET", "POST"])
@@ -91,5 +114,7 @@ def wechat():
         except InvalidMchIdException:
             return "Invalid message.", 400
 
-# if __name__ == "__main__":
-#     app.run(host="0.0.0.0", port=5001, debug=True)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
