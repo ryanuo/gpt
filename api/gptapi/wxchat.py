@@ -48,7 +48,8 @@ def handle_image_message(msg, engine):
     )
     if response and response.data:
         url = response.data[0].url
-        reply = create_reply(f'image generated successfully, click to view:<a href="{url}">View</a>',
+        reply = create_reply(
+            f'🎨 图片生成成功！点击查看 👉 <a href="{url}">🌟 点这里查看图片 🌟</a>',
             msg,
         )  # 指定消息类型为图片
         return reply.render()
