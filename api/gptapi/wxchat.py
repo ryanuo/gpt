@@ -40,7 +40,7 @@ def get_message(current_question, messages: List):
 def handle_image_message(msg, engine):
     # 处理图像生成请求
     prompt = msg.content[7:]
-    response = engine.chat.images.generate(
+    response = engine.images.generate(
         model="flux",
         prompt=prompt,
         response_format="b64_json"  # 修改为返回 Base64 编码的图片
