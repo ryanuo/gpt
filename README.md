@@ -1,39 +1,73 @@
-# GPT
-Custom GPT API
+# GPT API Project
+
+This is a Flask-based API project that integrates multiple features, including AI text generation, image generation, and WeChat Official Account message processing.
 
 ## Features
-- Provides a conversation interface based on the GPT model.
-- Supports WeChat Official Account message processing.
-- Offers a web-based testing interface.
-- Supports fetching content from a specified URL and generating summaries.
+- **AI Text Generation**: Supports generating text using different models.
+- **Image Generation**: Generates images based on user input prompts.
+- **WeChat Official Account Integration**: Handles messages and events from WeChat Official Accounts.
 
-## Dependencies
-- For Python dependencies, refer to the `requirements.txt` file.
-- Node.js version requirement: 18.x.
+## Installation
 
-## Instructions
-1. Install dependencies:
+1. Clone the project locally:
    ```bash
+   git clone https://github.com/your-repo/gpt.git
+   cd gpt
+   ```
+
+2. Create a virtual environment and install dependencies:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # For Windows users, use venv\Scripts\activate
    pip install -r requirements.txt
    ```
 
-2. Start the Flask application:
+3. Configure environment variables:
+   - Create a `.env` file and set the necessary environment variables, such as `WX_TOKEN`.
+
+4. Install frontend dependencies (if needed):
+   ```bash
+   npm install
+   ```
+
+## Usage
+
+1. Start the Flask application:
    ```bash
    python -m api.index
    ```
 
-3. Access the testing page:
-   Open your browser and visit `http://localhost:5001`.
+2. Access the following endpoints:
+   - `http://localhost:5000/`: AI interface testing page.
+   - `http://localhost:5000/image`: Image generation page.
+   - `http://localhost:5000/models`: Retrieve the list of available models.
 
-4. Configure WeChat Official Account:
-   - Set the WeChat Official Account `Token` to `wxToken`.
-   - Configure the server URL to point to the `/wechat` endpoint.
+3. Deploy to Vercel:
+   - Ensure the `vercel.json` configuration is correct.
+   - Deploy using the Vercel CLI:
+     ```bash
+     vercel
+     ```
 
-5. Use the AI API:
-   - Get the list of models: `GET /models`
-   - Generate conversation completion results: `POST /g4f/<model>`
-   - Fetch content from a URL and generate a summary: `POST /ai-post`
+## File Structure
+```
+gpt/
+├── api/
+│   ├── config.py          # Configuration file
+│   ├── gptapi/            # GPT-related logic
+│   ├── post/              # Data processing module
+│   ├── routes/            # Routing module
+│   ├── templates/         # Frontend templates
+│   └── utils.py           # Utility functions
+├── .gitignore             # Git ignore file
+├── package.json           # Node.js configuration file
+├── requirements.txt       # Python dependencies
+├── vercel.json            # Vercel configuration
+└── README.md              # Project documentation
+```
 
-## Notes
-- Ensure the `.env` file contains the necessary environment variables.
-- The default model is `gpt-4o-mini`, which can be modified in `api/config.py`.
+## Contribution
+Feel free to submit Issues or Pull Requests to improve this project.
+
+## License
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).

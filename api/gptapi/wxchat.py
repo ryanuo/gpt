@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 from wechatpy import create_reply
@@ -7,8 +8,7 @@ from flask import request
 from api.config import default_model
 from api.utils import handle_ai_response
 
-token = "wxToken"  # 设置你的微信公众号的token
-
+token = os.getenv("WX_TOKEN", "default_wxToken")  # 从环境变量获取微信公众号的token，若未设置则使用默认值
 
 def verify_signature():
     signature = request.args.get("signature", "")
