@@ -22,5 +22,6 @@ def hello():
 def generate_image():
     return render_template("image.html")
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# development use
+# if __name__ == "__main__":
+#     app.run(debug=True)
