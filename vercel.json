@@ -15,7 +15,7 @@
         },
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://ryanuo.cc"
+          "value": "*"
         },
         {
           "key": "Access-Control-Allow-Methods",
