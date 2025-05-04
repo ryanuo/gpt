@@ -6,7 +6,7 @@ from .routes.ai_post import ai_post_bp
 from .routes.wechat import wechat_bp
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://ryanuo.cc"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "https://ryanuo.cc", "methods": ["GET", "POST", "OPTIONS"], "allow_headers": "*"}}, supports_credentials=True)
 
 # 注册蓝图
 app.register_blueprint(models_bp, url_prefix="/models")
