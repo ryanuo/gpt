@@ -12,7 +12,7 @@ CORS(app, resources={r"/*": {"origins": "https://ryanuo.cc"}})
 # 注册蓝图
 app.register_blueprint(models_bp, url_prefix="/models")
 app.register_blueprint(g4f_bp, url_prefix="/g4f")
-app.register_blueprint(ai_post_bp, url_prefix="/ai-post")
+app.register_blueprint(ai_post_bp)
 app.register_blueprint(wechat_bp, url_prefix="/wechat")
 app.register_blueprint(gen_image_bp, url_prefix="/generate-image")
 

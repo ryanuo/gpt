@@ -6,7 +6,7 @@ from ..shared_client import client  # 从 shared_client 导入 client
 
 ai_post_bp = Blueprint("ai_post", __name__)
 
-@ai_post_bp.route("/", methods=["POST"])
+@ai_post_bp.route("/ai-post", methods=["POST"])
 def ai_post():
     url = request.headers.get("Refererurl")
     if not url:
