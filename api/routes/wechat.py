@@ -7,7 +7,7 @@ from ..shared_client import client  # 从 shared_client 导入 client
 wechat_bp = Blueprint("wechat", __name__)
 Session = {}
 
-@wechat_bp.route("/", methods=["GET", "POST"])
+@wechat_bp.route("/wechat", methods=["GET", "POST"])
 def wechat():
     if request.method == "GET":
         return request.args.get("echostr", "")

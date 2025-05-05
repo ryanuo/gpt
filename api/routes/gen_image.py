@@ -3,7 +3,7 @@ from ..shared_client import client  # 从 shared_client 导入 client
 
 gen_image_bp = Blueprint("generate-image", __name__)
 
-@gen_image_bp.route("/", methods=["POST"])
+@gen_image_bp.route("/generate-image", methods=["POST"])
 def generate_image_post():  # Renamed to avoid conflict
     # 从请求中获取提示词
     prompt = request.json.get("prompt", "a white siamese cat")

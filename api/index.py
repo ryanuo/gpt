@@ -10,11 +10,11 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "https://ryanuo.cc"}})
 
 # 注册蓝图
-app.register_blueprint(models_bp, url_prefix="/models")
-app.register_blueprint(g4f_bp, url_prefix="/g4f")
+app.register_blueprint(models_bp)
+app.register_blueprint(g4f_bp)
 app.register_blueprint(ai_post_bp)
-app.register_blueprint(wechat_bp, url_prefix="/wechat")
-app.register_blueprint(gen_image_bp, url_prefix="/generate-image")
+app.register_blueprint(wechat_bp)
+app.register_blueprint(gen_image_bp)
 
 @app.route("/", methods=["GET"])
 def hello():

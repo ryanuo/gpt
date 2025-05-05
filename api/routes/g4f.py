@@ -5,7 +5,7 @@ from ..shared_client import client  # 从 shared_client 导入 client
 
 g4f_bp = Blueprint("g4f", __name__)
 
-@g4f_bp.route("/<path:model>", methods=["POST"])
+@g4f_bp.route("/g4f/<path:model>", methods=["POST"])
 def generate_completion(model):
     if model not in g4f_model_list:
         return jsonify({"error": "Invalid model"})
