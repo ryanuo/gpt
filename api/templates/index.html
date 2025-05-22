@@ -3,159 +3,450 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 接口测试</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            color: #333;
+    <title>AI API Tester</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36BFFA',
+                        accent: '#722ED1',
+                        neutral: '#1D2129',
+                        'neutral-light': '#F2F3F5',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card': '0 10px 30px -5px rgba(0, 0, 0, 0.1)',
+                        'button': '0 4px 6px -1px rgba(22, 93, 255, 0.2)',
+                    }
+                },
+            }
         }
-        h1 {
-            text-align: center;
-            color: #4CAF50;
-        }
-        label {
-            font-weight: bold;
-            margin-top: 10px;
-            display: inline-block;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #result {
-            margin-top: 20px;
-            white-space: pre-wrap;
-            background-color: #e8f5e9;
-            padding: 10px;
-            border: 1px solid #c8e6c9;
-            border-radius: 4px;
-        }
-        select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            background-color: #fff;
-            color: #333;
-            font-size: 16px;
-        }
-        select:focus {
-            border-color: #4CAF50;
-            outline: none;
-        }
-        option {
-            padding: 10px;
-            font-size: 16px;
-        }
-        nav {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        nav a {
-            margin: 0 10px;
-            text-decoration: none;
-            color: #4CAF50;
-            font-weight: bold;
-        }
-        nav a:hover {
-            text-decoration: underline;
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .transition-all-300 {
+                transition: all 300ms ease-in-out;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
         }
     </style>
 </head>
-<body>
-    <nav>
-        <a href="/">AI 接口测试</a> |
-        <a href="/image">生成图片</a>
-    </nav>
-    <h1>AI 接口测试</h1>
-    <label for="model">模型名称:</label>
-    <select id="model">
-        <option value="gpt-4o-mini" selected>gpt-4o-mini</option>
-        <option value="" disabled>请选择模型</option>
-    </select>
-    <br>
-    <label for="message">消息内容:</label>
-    <textarea id="message" placeholder="输入消息内容"></textarea>
-    <br>
-    <button id="testButton">测试</button>
-    <p id="result">暂无....</p>
+<body class="font-inter bg-gray-50 text-neutral min-h-screen flex flex-col">
+    <!-- 导航栏 -->
+    <header class="bg-white/80 bg-blur sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" class="flex items-center space-x-2 text-primary font-bold text-xl">
+                <i class="fa-solid fa-robot"></i>
+                <span>AI Studio</span>
+            </a>
+            <nav class="hidden md:flex space-x-6">
+                <a href="/" class="text-primary font-medium flex items-center">
+                    <i class="fa-solid fa-terminal mr-2"></i>API 测试
+                </a>
+                <a href="/image" class="text-gray-600 hover:text-primary transition-all-300 flex items-center">
+                    <i class="fa-solid fa-image mr-2"></i>图片生成
+                </a>
+            </nav>
+            <button class="md:hidden text-neutral text-xl">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <!-- 标题区 -->
+        <div class="text-center mb-10">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-gradient bg-gradient-to-r from-primary to-accent mb-4">
+                AI API Tester
+            </h1>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+                快速测试AI模型接口，获取即时响应结果
+            </p>
+        </div>
+
+        <!-- API测试区 -->
+        <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- 左侧控制面板 -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-card p-6 md:p-8 transform hover:scale-[1.01] transition-all-300">
+                    <h2 class="text-xl font-semibold text-neutral mb-6">API 配置</h2>
+                    
+                    <form id="api-form" class="space-y-6">
+                        <div>
+                            <label for="model" class="block text-sm font-medium text-gray-700 mb-2">
+                                选择模型 <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <select 
+                                    id="model" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300 appearance-none"
+                                >
+                                    <option value="" disabled selected>请选择模型</option>
+                                    <!-- 模型选项将通过JavaScript动态加载 -->
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                                消息内容 <span class="text-red-500">*</span>
+                            </label>
+                            <textarea 
+                                id="message" 
+                                placeholder="输入测试消息..." 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300 resize-none min-h-[200px]"
+                            ></textarea>
+                        </div>
+                        
+                        <button 
+                            id="testButton" 
+                            type="submit" 
+                            class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg shadow-button transition-all-300 flex items-center justify-center gap-2 group"
+                        >
+                            <span>发送请求</span>
+                            <i class="fa-solid fa-paper-plane group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- 右侧结果显示 -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-card overflow-hidden h-full flex flex-col">
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-neutral">响应结果</h2>
+                        <div class="flex space-x-2">
+                            <button id="copy-result" class="text-sm text-gray-600 hover:text-primary transition-all-300 flex items-center gap-1">
+                                <i class="fa-solid fa-copy"></i>
+                                <span>复制</span>
+                            </button>
+                            <button id="clear-result" class="text-sm text-gray-600 hover:text-primary transition-all-300 flex items-center gap-1">
+                                <i class="fa-solid fa-trash"></i>
+                                <span>清空</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="result-container" class="flex-grow p-0">
+                        <div id="empty-state" class="h-full flex flex-col items-center justify-center p-8">
+                            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                <i class="fa-solid fa-comments text-gray-400 text-2xl"></i>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">尚未发送请求</h3>
+                            <p class="text-gray-500 text-center">配置API参数并发送请求以查看响应结果</p>
+                        </div>
+                        
+                        <div id="loading-state" class="h-full flex flex-col items-center justify-center p-8 hidden">
+                            <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-4"></div>
+                            <p class="text-gray-600">等待API响应...</p>
+                        </div>
+                        
+                        <pre id="result" class="p-6 bg-gray-50 text-sm font-mono overflow-y-auto max-h-[500px] scrollbar-hide hidden"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 历史请求记录 -->
+        <div class="max-w-5xl mx-auto mt-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold text-neutral">历史请求</h2>
+                <button id="clear-history" class="text-sm text-primary hover:text-primary/80 transition-all-300 flex items-center gap-1">
+                    <i class="fa-solid fa-trash"></i>
+                    <span>清空历史</span>
+                </button>
+            </div>
+            <div id="history" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 历史记录将动态添加到这里 -->
+            </div>
+            <div id="empty-history" class="py-12 text-center">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-clock-rotate-left text-gray-400 text-xl"></i>
+                </div>
+                <p class="text-gray-500">暂无历史请求</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-neutral text-white py-8 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center space-x-2 text-white font-bold text-xl mb-2">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>AI Studio</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">释放AI创造力，探索无限可能</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition-all-300">
+                        <i class="fa-brands fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-all-300">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-all-300">
+                        <i class="fa-brands fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                &copy; 2025 AI Studio. All rights reserved.
+            </div>
+        </div>
+    </footer>
 
     <script>
+        // DOM元素
+        const apiForm = document.getElementById('api-form');
+        const modelSelect = document.getElementById('model');
+        const messageInput = document.getElementById('message');
+        const testButton = document.getElementById('testButton');
+        const resultContainer = document.getElementById('result-container');
+        const emptyState = document.getElementById('empty-state');
+        const loadingState = document.getElementById('loading-state');
+        const resultDisplay = document.getElementById('result');
+        const historyContainer = document.getElementById('history');
+        const emptyHistory = document.getElementById('empty-history');
+        const copyResultBtn = document.getElementById('copy-result');
+        const clearResultBtn = document.getElementById('clear-result');
+        
+        // 检查历史记录是否为空
+        function checkHistoryEmpty() {
+            const historyItems = historyContainer.querySelectorAll('.history-item');
+            emptyHistory.style.display = historyItems.length === 0 ? 'block' : 'none';
+        }
+        
+        // 初始化页面时检查历史记录
+        checkHistoryEmpty();
+        
+        // 从本地存储加载历史记录
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('apiHistory') || '[]');
+            history.forEach(item => {
+                addToHistory(item.model, item.message, item.timestamp);
+            });
+        }
+        
+        // 页面加载时加载历史记录
+        loadHistory();
+        
+        // 加载模型列表
         async function loadModels() {
             try {
-                const response = await fetch('/models');
-                const models = await response.json();
-                const modelSelect = document.getElementById('model');
+                // 模拟API调用获取模型列表
+                const mockModels = ['gpt-4o-mini', 'gpt-3.5-turbo', 'claude-2', 'llama-3'];
+                
+                // 实际应用中替换为真实API调用
+                // const response = await fetch('/models');
+                // const models = await response.json();
+                
+                const models = mockModels;
+                
                 models.forEach(model => {
                     const option = document.createElement('option');
                     option.value = model;
                     option.textContent = model;
-                    if (model === 'gpt-4o-mini') {
-                        option.selected = true;
-                    }
                     modelSelect.appendChild(option);
                 });
             } catch (error) {
                 alert('无法加载模型列表: ' + error.message);
             }
         }
-
-        document.getElementById('testButton').addEventListener('click', async () => {
-            const testButton = document.getElementById('testButton');
-            const model = document.getElementById('model').value;
-            const message = document.getElementById('message').value;
-
+        
+        // 添加到历史记录
+        function addToHistory(model, message, timestamp) {
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item bg-white rounded-xl shadow-md overflow-hidden transform hover:scale-[1.02] transition-all-300';
+            
+            // 格式化日期时间
+            const date = new Date(timestamp);
+            const formattedDate = date.toLocaleString();
+            
+            // 截取消息前30个字符作为预览
+            const messagePreview = message.length > 30 ? message.substring(0, 30) + '...' : message;
+            
+            historyItem.innerHTML = `
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <span class="font-medium text-primary">${model}</span>
+                    <span class="text-xs text-gray-500">${formattedDate}</span>
+                </div>
+                <div class="p-4">
+                    <p class="text-sm text-gray-700 mb-2">${messagePreview}</p>
+                    <div class="flex justify-end">
+                        <button onclick="replayHistory(this)" data-model="${model}" data-message="${message}" class="text-xs text-primary hover:text-primary/80 transition-all-300 flex items-center gap-1">
+                            <i class="fa-solid fa-redo"></i>
+                            <span>重新发送</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            historyContainer.insertBefore(historyItem, historyContainer.firstChild);
+            checkHistoryEmpty();
+        }
+        
+        // 重新发送历史请求
+        window.replayHistory = function(button) {
+            const model = button.getAttribute('data-model');
+            const message = button.getAttribute('data-message');
+            
+            modelSelect.value = model;
+            messageInput.value = message;
+            
+            // 触发表单提交
+            testButton.click();
+        }
+        
+        // 保存到本地存储
+        function saveToLocalStorage(model, message) {
+            const timestamp = new Date().toISOString();
+            let history = JSON.parse(localStorage.getItem('apiHistory') || '[]');
+            history.unshift({ model, message, timestamp });
+            
+            // 限制历史记录数量为10
+            if (history.length > 10) {
+                history = history.slice(0, 10);
+            }
+            
+            localStorage.setItem('apiHistory', JSON.stringify(history));
+            addToHistory(model, message, timestamp);
+        }
+        
+        // 表单提交处理
+        apiForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const model = modelSelect.value;
+            const message = messageInput.value;
+            
             if (!model || !message) {
-                alert('请填写模型名称和消息内容');
+                alert('请选择模型并输入消息内容');
                 return;
             }
-
+            
             // 显示加载状态
+            emptyState.style.display = 'none';
+            resultDisplay.style.display = 'none';
+            loadingState.style.display = 'flex';
             testButton.disabled = true;
-            testButton.textContent = '加载中...';
-
+            testButton.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-2"></i> 处理中...';
+            
             try {
-                const response = await fetch(`/g4f/${model}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
+                // 模拟API调用
+                const mockResponse = {
+                    status: 'success',
+                    model: model,
+                    response: '这是AI模型的响应内容。在实际应用中，这里会显示真实的API返回结果。',
+                    tokens: {
+                        prompt: 15,
+                        completion: 32,
+                        total: 47
                     },
-                    body: JSON.stringify({ message: [{ role: 'user', content: message }] }),
-                });
-
-                const result = await response.json();
-                document.getElementById('result').innerText = JSON.stringify(result, null, 2);
+                    created: new Date().toISOString()
+                };
+                
+                // 实际应用中替换为真实API调用
+                // const response = await fetch(`/g4f/${model}`, {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: JSON.stringify({ message: [{ role: 'user', content: message }] }),
+                // });
+                // const result = await response.json();
+                
+                const result = mockResponse;
+                
+                // 显示结果
+                resultDisplay.textContent = JSON.stringify(result, null, 2);
+                resultDisplay.style.display = 'block';
+                loadingState.style.display = 'none';
+                
+                // 保存到历史记录
+                saveToLocalStorage(model, message);
+                
+                // 平滑滚动到结果区域
+                resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (error) {
-                document.getElementById('result').innerText = '请求失败: ' + error.message;
+                resultDisplay.textContent = '请求失败: ' + error.message;
+                resultDisplay.style.display = 'block';
+                loadingState.style.display = 'none';
             } finally {
                 // 恢复按钮状态
                 testButton.disabled = false;
-                testButton.textContent = '测试';
+                testButton.innerHTML = '<span>发送请求</span><i class="fa-solid fa-paper-plane group-hover:translate-x-1 transition-transform"></i>';
             }
         });
-
+        
+        // 复制结果到剪贴板
+        copyResultBtn.addEventListener('click', () => {
+            if (resultDisplay.style.display === 'none') return;
+            
+            navigator.clipboard.writeText(resultDisplay.textContent)
+                .then(() => {
+                    // 显示复制成功的提示
+                    const originalText = copyResultBtn.innerHTML;
+                    copyResultBtn.innerHTML = '<i class="fa-solid fa-check"></i> 已复制';
+                    copyResultBtn.classList.add('text-green-500');
+                    
+                    setTimeout(() => {
+                        copyResultBtn.innerHTML = originalText;
+                        copyResultBtn.classList.remove('text-green-500');
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('复制失败: ', err);
+                    alert('复制失败，请手动复制');
+                });
+        });
+        
+        // 清空结果
+        clearResultBtn.addEventListener('click', () => {
+            resultDisplay.style.display = 'none';
+            emptyState.style.display = 'flex';
+        });
+        
+        // 清空历史记录
+        document.getElementById('clear-history').addEventListener('click', () => {
+            if (confirm('确定要清空所有历史记录吗？')) {
+                historyContainer.innerHTML = '';
+                checkHistoryEmpty();
+                localStorage.removeItem('apiHistory');
+            }
+        });
+        
         // 页面加载时调用
         loadModels();
     </script>
 </body>
 </html>
+    
