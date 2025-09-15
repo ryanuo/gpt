@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Image Generator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#165DFF',
-                        secondary: '#36BFFA',
-                        accent: '#722ED1',
-                        neutral: '#1D2129',
-                        'neutral-light': '#F2F3F5',
-                    },
-                    fontFamily: {
-                        inter: ['Inter', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'card': '0 10px 30px -5px rgba(0, 0, 0, 0.1)',
-                        'button': '0 4px 6px -1px rgba(22, 93, 255, 0.2)',
-                    }
-                },
-            }
-        }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Image Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#36BFFA',
+            accent: '#722ED1',
+            neutral: '#1D2129',
+            'neutral-light': '#F2F3F5',
+          },
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'card': '0 10px 30px -5px rgba(0, 0, 0, 0.1)',
+            'button': '0 4px 6px -1px rgba(22, 93, 255, 0.2)',
+          }
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
             .content-auto {
                 content-visibility: auto;
             }
@@ -47,248 +47,244 @@
         }
     </style>
 </head>
+
 <body class="font-inter bg-gray-50 text-neutral min-h-screen flex flex-col">
-    <!-- 导航栏 -->
-    <header class="bg-white/80 bg-blur sticky top-0 z-50 shadow-sm">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="/" class="flex items-center space-x-2 text-primary font-bold text-xl">
-                <i class="fa-solid fa-robot"></i>
-                <span>AI Studio</span>
-            </a>
-            <nav class="hidden md:flex space-x-6">
-                <a href="/" class="text-gray-600 hover:text-primary transition-all-300 flex items-center">
-                    <i class="fa-solid fa-terminal mr-2"></i>API 测试
-                </a>
-                <a href="/image" class="text-primary font-medium flex items-center">
-                    <i class="fa-solid fa-image mr-2"></i>图片生成
-                </a>
-            </nav>
-            <button class="md:hidden text-neutral text-xl">
-                <i class="fa-solid fa-bars"></i>
+  <!-- 导航栏 -->
+  <header class="bg-white/80 bg-blur sticky top-0 z-50 shadow-sm">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="/" class="flex items-center space-x-2 text-primary font-bold text-xl">
+        <i class="fa-solid fa-robot"></i>
+        <span>AI Studio</span>
+      </a>
+      <nav class="hidden md:flex space-x-6">
+        <a href="/" class="text-gray-600 hover:text-primary transition-all-300 flex items-center">
+          <i class="fa-solid fa-terminal mr-2"></i>API 测试
+        </a>
+        <a href="/image" class="text-primary font-medium flex items-center">
+          <i class="fa-solid fa-image mr-2"></i>图片生成
+        </a>
+      </nav>
+      <button class="md:hidden text-neutral text-xl">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+    <!-- 标题区 -->
+    <div class="text-center mb-10">
+      <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-gradient bg-gradient-to-r from-primary to-accent mb-4">
+        AI Image Generator
+      </h1>
+      <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+        通过AI技术将文本描述转换为高质量图像，释放你的创意无限可能
+      </p>
+    </div>
+
+    <!-- 图片生成表单 -->
+    <div
+      class="max-w-3xl mx-auto bg-white rounded-2xl shadow-card p-6 md:p-8 mb-12 transform hover:scale-[1.01] transition-all-300">
+      <form id="image-form" class="space-y-6">
+        <div>
+          <label for="prompt" class="block text-sm font-medium text-gray-700 mb-2">
+            图像描述 <span class="text-red-500">*</span>
+          </label>
+          <textarea id="prompt" name="prompt" placeholder="输入详细的图像描述，例如：一只穿着太空服的猫在火星上，高分辨率，科幻风格"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300 resize-none min-h-[120px]"
+            required></textarea>
+          <p class="text-xs text-gray-500 mt-2">
+            提示：描述越详细，生成的图像越符合预期
+          </p>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg shadow-button transition-all-300 flex items-center justify-center gap-2 group">
+          <span>生成图像</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+        </button>
+
+        <div id="loading" class="hidden text-center py-4">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <p class="text-gray-600 mt-2">正在生成图像，请稍候...</p>
+        </div>
+      </form>
+    </div>
+
+    <!-- 生成结果 -->
+    <div id="result" class="max-w-3xl mx-auto mb-12 hidden">
+      <div class="bg-white rounded-2xl shadow-card overflow-hidden">
+        <div class="p-6 border-b border-gray-100">
+          <h2 class="text-xl font-semibold text-neutral">生成结果</h2>
+        </div>
+        <div class="p-6 flex flex-col items-center">
+          <img id="generated-image" src="" alt="Generated Image"
+            class="rounded-lg shadow-md max-w-full max-h-[400px] object-contain border-4 border-neutral-light">
+          <div class="mt-4 flex gap-3">
+            <button
+              class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all-300">
+              <i class="fa-solid fa-download text-gray-600"></i>
+              <span class="text-sm text-gray-700">下载</span>
             </button>
+            <button
+              class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all-300">
+              <i class="fa-solid fa-share-alt text-gray-600"></i>
+              <span class="text-sm text-gray-700">分享</span>
+            </button>
+            <button
+              class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all-300">
+              <i class="fa-solid fa-refresh text-gray-600"></i>
+              <span class="text-sm text-gray-700">重新生成</span>
+            </button>
+          </div>
         </div>
-    </header>
+      </div>
+    </div>
 
-    <!-- 主内容区 -->
-    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
-        <!-- 标题区 -->
-        <div class="text-center mb-10">
-            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-gradient bg-gradient-to-r from-primary to-accent mb-4">
-                AI Image Generator
-            </h1>
-            <p class="text-gray-600 max-w-2xl mx-auto text-lg">
-                通过AI技术将文本描述转换为高质量图像，释放你的创意无限可能
-            </p>
+    <!-- 历史记录 -->
+    <div class="max-w-5xl mx-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold text-neutral">历史记录</h2>
+        <button id="clear-history"
+          class="text-sm text-primary hover:text-primary/80 transition-all-300 flex items-center gap-1">
+          <i class="fa-solid fa-trash"></i>
+          <span>清空历史</span>
+        </button>
+      </div>
+      <div id="history" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 历史记录项将动态添加到这里 -->
+      </div>
+      <div id="empty-history" class="py-12 text-center">
+        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fa-solid fa-clock-rotate-left text-gray-400 text-xl"></i>
         </div>
+        <p class="text-gray-500">暂无生成历史</p>
+      </div>
+    </div>
+  </main>
 
-        <!-- 图片生成表单 -->
-        <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-card p-6 md:p-8 mb-12 transform hover:scale-[1.01] transition-all-300">
-            <form id="image-form" class="space-y-6">
-                <div>
-                    <label for="prompt" class="block text-sm font-medium text-gray-700 mb-2">
-                        图像描述 <span class="text-red-500">*</span>
-                    </label>
-                    <textarea 
-                        id="prompt" 
-                        name="prompt" 
-                        placeholder="输入详细的图像描述，例如：一只穿着太空服的猫在火星上，高分辨率，科幻风格" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300 resize-none min-h-[120px]"
-                        required
-                    ></textarea>
-                    <p class="text-xs text-gray-500 mt-2">
-                        提示：描述越详细，生成的图像越符合预期
-                    </p>
-                </div>
-                
-                <button 
-                    type="submit" 
-                    class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg shadow-button transition-all-300 flex items-center justify-center gap-2 group"
-                >
-                    <span>生成图像</span>
-                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                </button>
-                
-                <div id="loading" class="hidden text-center py-4">
-                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                    <p class="text-gray-600 mt-2">正在生成图像，请稍候...</p>
-                </div>
-            </form>
+  <!-- 页脚 -->
+  <footer class="bg-neutral text-white py-8 mt-16">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0">
+          <div class="flex items-center space-x-2 text-white font-bold text-xl mb-2">
+            <i class="fa-solid fa-robot"></i>
+            <span>AI Studio</span>
+          </div>
+          <p class="text-gray-400 text-sm">释放AI创造力，探索无限可能</p>
         </div>
-
-        <!-- 生成结果 -->
-        <div id="result" class="max-w-3xl mx-auto mb-12 hidden">
-            <div class="bg-white rounded-2xl shadow-card overflow-hidden">
-                <div class="p-6 border-b border-gray-100">
-                    <h2 class="text-xl font-semibold text-neutral">生成结果</h2>
-                </div>
-                <div class="p-6 flex flex-col items-center">
-                    <img 
-                        id="generated-image" 
-                        src="" 
-                        alt="Generated Image" 
-                        class="rounded-lg shadow-md max-w-full max-h-[400px] object-contain border-4 border-neutral-light"
-                    >
-                    <div class="mt-4 flex gap-3">
-                        <button class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all-300">
-                            <i class="fa-solid fa-download text-gray-600"></i>
-                            <span class="text-sm text-gray-700">下载</span>
-                        </button>
-                        <button class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all-300">
-                            <i class="fa-solid fa-share-alt text-gray-600"></i>
-                            <span class="text-sm text-gray-700">分享</span>
-                        </button>
-                        <button class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all-300">
-                            <i class="fa-solid fa-refresh text-gray-600"></i>
-                            <span class="text-sm text-gray-700">重新生成</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="flex space-x-6">
+          <a href="#" class="text-gray-400 hover:text-white transition-all-300">
+            <i class="fa-brands fa-twitter"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-white transition-all-300">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-white transition-all-300">
+            <i class="fa-brands fa-linkedin"></i>
+          </a>
         </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+        &copy; 2025 AI Studio. All rights reserved.
+      </div>
+    </div>
+  </footer>
 
-        <!-- 历史记录 -->
-        <div class="max-w-5xl mx-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold text-neutral">历史记录</h2>
-                <button id="clear-history" class="text-sm text-primary hover:text-primary/80 transition-all-300 flex items-center gap-1">
-                    <i class="fa-solid fa-trash"></i>
-                    <span>清空历史</span>
-                </button>
-            </div>
-            <div id="history" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- 历史记录项将动态添加到这里 -->
-            </div>
-            <div id="empty-history" class="py-12 text-center">
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fa-solid fa-clock-rotate-left text-gray-400 text-xl"></i>
-                </div>
-                <p class="text-gray-500">暂无生成历史</p>
-            </div>
-        </div>
-    </main>
+  <script>
+    const form = document.getElementById('image-form');
+    const loading = document.getElementById('loading');
+    const resultDiv = document.getElementById('result');
+    const historyDiv = document.getElementById('history');
+    const emptyHistory = document.getElementById('empty-history');
+    const clearHistoryBtn = document.getElementById('clear-history');
 
-    <!-- 页脚 -->
-    <footer class="bg-neutral text-white py-8 mt-16">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-6 md:mb-0">
-                    <div class="flex items-center space-x-2 text-white font-bold text-xl mb-2">
-                        <i class="fa-solid fa-robot"></i>
-                        <span>AI Studio</span>
-                    </div>
-                    <p class="text-gray-400 text-sm">释放AI创造力，探索无限可能</p>
-                </div>
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white transition-all-300">
-                        <i class="fa-brands fa-twitter"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-all-300">
-                        <i class="fa-brands fa-github"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-all-300">
-                        <i class="fa-brands fa-linkedin"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
-                &copy; 2025 AI Studio. All rights reserved.
-            </div>
-        </div>
-    </footer>
+    // 检查历史记录是否为空
+    function checkHistoryEmpty() {
+      const historyItems = historyDiv.querySelectorAll('.history-item');
+      emptyHistory.style.display = historyItems.length === 0 ? 'block' : 'none';
+    }
 
-    <script>
-        const form = document.getElementById('image-form');
-        const loading = document.getElementById('loading');
-        const resultDiv = document.getElementById('result');
-        const historyDiv = document.getElementById('history');
-        const emptyHistory = document.getElementById('empty-history');
-        const clearHistoryBtn = document.getElementById('clear-history');
-        
-        // 检查历史记录是否为空
-        function checkHistoryEmpty() {
-            const historyItems = historyDiv.querySelectorAll('.history-item');
-            emptyHistory.style.display = historyItems.length === 0 ? 'block' : 'none';
-        }
-        
-        // 初始化页面时检查历史记录
+    // 初始化页面时检查历史记录
+    checkHistoryEmpty();
+
+    // 清空历史记录
+    clearHistoryBtn.addEventListener('click', () => {
+      if (confirm('确定要清空所有历史记录吗？')) {
+        historyDiv.innerHTML = '';
         checkHistoryEmpty();
-        
-        // 清空历史记录
-        clearHistoryBtn.addEventListener('click', () => {
-            if (confirm('确定要清空所有历史记录吗？')) {
-                historyDiv.innerHTML = '';
-                checkHistoryEmpty();
-                localStorage.removeItem('imageHistory');
-            }
-        });
-        
-        // 从本地存储加载历史记录
-        function loadHistory() {
-            const history = JSON.parse(localStorage.getItem('imageHistory') || '[]');
-            history.forEach(item => {
-                addToHistory(item.imageUrl, item.timestamp, false);
-            });
+        localStorage.removeItem('imageHistory');
+      }
+    });
+
+    // 从本地存储加载历史记录
+    function loadHistory() {
+      const history = JSON.parse(localStorage.getItem('imageHistory') || '[]');
+      history.forEach(item => {
+        addToHistory(item.imageUrl, item.timestamp, false);
+      });
+    }
+
+    // 页面加载时加载历史记录
+    loadHistory();
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      loading.style.display = 'block';
+      resultDiv.style.display = 'none';
+
+      const prompt = document.getElementById('prompt').value;
+
+      try {
+        // 模拟API调用
+        const mockResponse = {
+          image_url: `https://picsum.photos/seed/${Date.now()}/800/600`
+        };
+
+        // 实际应用中替换为真实API调用
+        // const response = await fetch('/generate-image', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ prompt })
+        // });
+        // const data = await response.json();
+
+        const data = mockResponse;
+
+        if (data.image_url) {
+          const img = document.getElementById('generated-image');
+          img.src = data.image_url;
+          img.style.display = 'block';
+          resultDiv.style.display = 'block';
+
+          // 添加到历史记录并保存到本地存储
+          const timestamp = new Date().toISOString();
+          addToHistory(data.image_url, timestamp);
+          saveToLocalStorage(data.image_url, timestamp);
+
+          // 平滑滚动到结果区域
+          resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          alert('生成图像失败: ' + (data.error || '未知错误'));
         }
-        
-        // 页面加载时加载历史记录
-        loadHistory();
-        
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            loading.style.display = 'block';
-            resultDiv.style.display = 'none';
-            
-            const prompt = document.getElementById('prompt').value;
-            
-            try {
-                // 模拟API调用
-                const mockResponse = {
-                    image_url: `https://picsum.photos/seed/${Date.now()}/800/600`
-                };
-                
-                // 实际应用中替换为真实API调用
-                // const response = await fetch('/generate-image', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ prompt })
-                // });
-                // const data = await response.json();
-                
-                const data = mockResponse;
-                
-                if (data.image_url) {
-                    const img = document.getElementById('generated-image');
-                    img.src = data.image_url;
-                    img.style.display = 'block';
-                    resultDiv.style.display = 'block';
-                    
-                    // 添加到历史记录并保存到本地存储
-                    const timestamp = new Date().toISOString();
-                    addToHistory(data.image_url, timestamp);
-                    saveToLocalStorage(data.image_url, timestamp);
-                    
-                    // 平滑滚动到结果区域
-                    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } else {
-                    alert('生成图像失败: ' + (data.error || '未知错误'));
-                }
-            } catch (error) {
-                alert('错误: ' + error.message);
-            } finally {
-                loading.style.display = 'none';
-            }
-        });
-        
-        // 添加到历史记录
-        function addToHistory(imageUrl, timestamp, prepend = true) {
-            const historyItem = document.createElement('div');
-            historyItem.className = 'history-item bg-white rounded-xl shadow-md overflow-hidden transform hover:scale-[1.02] transition-all-300';
-            
-            // 格式化日期时间
-            const date = new Date(timestamp);
-            const formattedDate = date.toLocaleString();
-            
-            historyItem.innerHTML = `
+      } catch (error) {
+        alert('错误: ' + error.message);
+      } finally {
+        loading.style.display = 'none';
+      }
+    });
+
+    // 添加到历史记录
+    function addToHistory(imageUrl, timestamp, prepend = true) {
+      const historyItem = document.createElement('div');
+      historyItem.className = 'history-item bg-white rounded-xl shadow-md overflow-hidden transform hover:scale-[1.02] transition-all-300';
+
+      // 格式化日期时间
+      const date = new Date(timestamp);
+      const formattedDate = date.toLocaleString();
+
+      historyItem.innerHTML = `
                 <div class="relative">
                     <img src="${imageUrl}" alt="Generated Image" class="w-full h-48 object-cover">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-4">
@@ -301,47 +297,47 @@
                     <p class="text-sm text-gray-500">${formattedDate}</p>
                 </div>
             `;
-            
-            if (prepend) {
-                historyDiv.insertBefore(historyItem, historyDiv.firstChild);
-            } else {
-                historyDiv.appendChild(historyItem);
-            }
-            
-            checkHistoryEmpty();
-        }
-        
-        // 移除历史记录项
-        function removeHistoryItem(button) {
-            const historyItem = button.closest('.history-item');
-            historyItem.classList.add('scale-95', 'opacity-0');
-            historyItem.style.transition = 'all 300ms ease-in-out';
-            
-            setTimeout(() => {
-                historyItem.remove();
-                checkHistoryEmpty();
-                
-                // 更新本地存储
-                const imageUrl = historyItem.querySelector('img').src;
-                let history = JSON.parse(localStorage.getItem('imageHistory') || '[]');
-                history = history.filter(item => item.imageUrl !== imageUrl);
-                localStorage.setItem('imageHistory', JSON.stringify(history));
-            }, 300);
-        }
-        
-        // 保存到本地存储
-        function saveToLocalStorage(imageUrl, timestamp) {
-            let history = JSON.parse(localStorage.getItem('imageHistory') || '[]');
-            history.unshift({ imageUrl, timestamp });
-            
-            // 限制历史记录数量为20
-            if (history.length > 20) {
-                history = history.slice(0, 20);
-            }
-            
-            localStorage.setItem('imageHistory', JSON.stringify(history));
-        }
-    </script>
+
+      if (prepend) {
+        historyDiv.insertBefore(historyItem, historyDiv.firstChild);
+      } else {
+        historyDiv.appendChild(historyItem);
+      }
+
+      checkHistoryEmpty();
+    }
+
+    // 移除历史记录项
+    function removeHistoryItem(button) {
+      const historyItem = button.closest('.history-item');
+      historyItem.classList.add('scale-95', 'opacity-0');
+      historyItem.style.transition = 'all 300ms ease-in-out';
+
+      setTimeout(() => {
+        historyItem.remove();
+        checkHistoryEmpty();
+
+        // 更新本地存储
+        const imageUrl = historyItem.querySelector('img').src;
+        let history = JSON.parse(localStorage.getItem('imageHistory') || '[]');
+        history = history.filter(item => item.imageUrl !== imageUrl);
+        localStorage.setItem('imageHistory', JSON.stringify(history));
+      }, 300);
+    }
+
+    // 保存到本地存储
+    function saveToLocalStorage(imageUrl, timestamp) {
+      let history = JSON.parse(localStorage.getItem('imageHistory') || '[]');
+      history.unshift({ imageUrl, timestamp });
+
+      // 限制历史记录数量为20
+      if (history.length > 20) {
+        history = history.slice(0, 20);
+      }
+
+      localStorage.setItem('imageHistory', JSON.stringify(history));
+    }
+  </script>
 </body>
+
 </html>
-    
