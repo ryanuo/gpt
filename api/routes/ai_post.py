@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify
 from ..post.index import get_url_post_text
 from ..config import default_model
-from ..utils import handle_ai_response
-from ..shared_client import client  # 从 shared_client 导入 client
+from ..services.generator import generate_completion_with_client  # 新增导入
 
 ai_post_bp = Blueprint("ai_post", __name__)
 
@@ -23,6 +22,5 @@ def ai_post():
         {"role": "assistant", "content": assistant_content},
         {"role": "user", "content": text},
     ]
-    completion = client.chat.completions.create(model=default_model, messages=message)
-    completion_content = handle_ai_response(completion.choices[0].message.content)
+    completion_content = generate_completion_with_client(default_model, message)
     return jsonify({"data": completion_content, "status_code": 200, "model": default_model})

@@ -2,7 +2,7 @@ from flask import Blueprint, request
 from wechatpy import parse_message, create_reply
 from wechatpy.exceptions import InvalidMchIdException
 from ..gptapi.wxchat import handle_text_message, verify_signature, subscribe_reply, handle_image_message
-from ..shared_client import client  # 从 shared_client 导入 client
+from ..services.shared_client import client  # 从 shared_client 导入 client
 
 wechat_bp = Blueprint("wechat", __name__)
 Session = {}

@@ -24,6 +24,10 @@ def hello():
 def generate_image():
     return render_template("image.html")
 
+@app.route("/vmodels", methods=["GET"])
+def view_models():
+    return render_template("models.html")
+
 # development use
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)

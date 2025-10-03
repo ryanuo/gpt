@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模型列表</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <style>
+        .notification-hidden {
+            transform: translateX(calc(100% + 2rem));
+            opacity: 0;
+        }
+
+        .notification-visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+    <header class="bg-white/80 bg-blur sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" class="flex items-center space-x-2 text-primary font-bold text-xl">
+                <i class="fa-solid fa-robot"></i>
+                <span>AI Studio</span>
+            </a>
+            <nav class="hidden md:flex space-x-6">
+                <a href="/" class="text-primary font-medium flex items-center">
+                    <i class="fa-solid fa-terminal mr-2"></i>API 测试
+                </a>
+                <a href="/image" class="text-gray-600 hover:text-primary transition-all-300 flex items-center">
+                    <i class="fa-solid fa-image mr-2"></i>图片生成
+                </a>
+                <a href="/vmodels" class="text-gray-600 hover:text-primary transition-all-300 flex items-center">
+                    <i class="fa-solid fa-list mr-2"></i>模型列表
+                </a>
+            </nav>
+            <button class="md:hidden text-neutral text-xl">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto py-8 px-4">
+        <!-- 新增复制提示通知 -->
+        <div id="notification"
+            class="notification-hidden fixed top-6 right-6 px-5 py-3 rounded-xl z-50 text-white font-medium bg-gradient-to-r from-green-500 to-emerald-600 shadow-2xl transition-all duration-300 ease-out">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-check-circle"></i>
+                <span>已复制到剪贴板!</span>
+            </div>
+        </div>
+        <div id="models-container"></div>
+    </div>
+    <script>
+        // 图标配置
+        const ICON_CONFIG = {
+            openai: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/1.68.0/files/light/openai.webp",
+                keywords: ["openai", "gpt"],
+            },
+            gemini: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/gemini-color.webp",
+                keywords: ["gemini", "google", "gemma"],
+            },
+            claude: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/claude-color.webp",
+                keywords: ["claude", "anthropic"],
+            },
+            grok: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/grok.webp",
+                keywords: ["grok", "xai"],
+            },
+            qwen: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/qwen-color.webp",
+                keywords: ["qwen", "tongyi", "wan"],
+            },
+            zhipu: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/zhipu-color.webp",
+                keywords: ["zhipu", "thudm", "glm", "zai"],
+            },
+            deepseek: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/deepseek-color.webp",
+                keywords: ["deepseek"],
+            },
+            kimi: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/kimi-color.webp",
+                keywords: ["kimi", "moonshot"],
+            },
+            tencent: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/hunyuan-color.webp",
+                keywords: ["hunyuan", "tencent", "腾讯混元"],
+            },
+            pplx: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/perplexity-color.webp",
+                keywords: ["pplx", "perplexity"],
+            },
+            yi: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/yi-color.webp",
+                keywords: ["yi", "零一万物"],
+            },
+            silicon: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/1.68.0/files/light/siliconcloud-color.webp",
+                keywords: ["silicon", "siliconflow", "siliconcloud", "硅基", "硅基流动"],
+            },
+            longcat: {
+                icon: "https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/longcat-color.webp",
+                keywords: ["longcat", "longcat-ai"],
+            },
+        };
+
+        // 构建关键词索引 Map（小写 → icon）
+        const ICON_KEYWORD_MAP = new Map();
+        for (const { icon, keywords } of Object.values(ICON_CONFIG)) {
+            for (const k of keywords) {
+                ICON_KEYWORD_MAP.set(k.toLowerCase(), icon);
+            }
+        }
+
+        // 根据 groupName 获取图标
+        function getGroupIcon(groupName) {
+            if (!groupName) return ICON_CONFIG.openai.icon; // 默认
+            const name = groupName.toLowerCase();
+
+            for (const [keyword, icon] of ICON_KEYWORD_MAP) {
+                if (name.includes(keyword)) return icon;
+            }
+
+            return ICON_CONFIG.openai.icon; // 默认兜底
+        }
+
+        function groupModels(models) {
+            const groups = {};
+            models.forEach(model => {
+                const prefix = model.id.split(/[-_/]/)[0];
+                if (!groups[prefix]) groups[prefix] = [];
+                groups[prefix].push(model.id);
+            });
+            return groups;
+        }
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.remove('notification-hidden');
+            notification.classList.add('notification-visible');
+
+            setTimeout(() => {
+                notification.classList.remove('notification-visible');
+                notification.classList.add('notification-hidden');
+            }, 2000);
+        }
+
+        // 渲染分组并为每个复制按钮绑定事件
+        function renderGroups(groups) {
+            const groupNames = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
+            return groupNames.map(group => `
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-6">
+                    <div class="p-5 flex items-center space-x-4">
+                        <img src="${getGroupIcon(group)}" class="w-12 h-12 rounded-xl object-cover bg-gray-50 border border-gray-200 shadow-sm">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">${group}</h3>
+                            <p class="text-sm text-gray-500">${groups[group].length} 个模型</p>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-100 p-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                            ${groups[group].map(model => `
+                                <div class="group relative bg-white rounded-xl p-4 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer" data-model="${model}">
+                                    <div class="font-medium text-gray-900 text-sm leading-tight break-all">${model}</div>
+                                    <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <i class="fas fa-copy text-gray-400 text-xs"></i>
+                                    </div>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        async function loadModels() {
+            const res = await fetch('/models');
+            const data = await res.json();
+            const groups = groupModels(data.data || []);
+            document.getElementById('models-container').innerHTML = renderGroups(groups);
+
+            // 绑定点击事件，只在点击时复制并显示提示
+            document.querySelectorAll('[data-model]').forEach(el => {
+                el.addEventListener('click', function (e) {
+                    const model = this.getAttribute('data-model');
+                    navigator.clipboard.writeText(model).then(showNotification);
+                });
+            });
+        }
+        loadModels();
+    </script>
+</body>
+
+</html>

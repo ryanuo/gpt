@@ -71,6 +71,9 @@
         <a href="/image" class="text-gray-600 hover:text-primary transition-all-300 flex items-center">
           <i class="fa-solid fa-image mr-2"></i>图片生成
         </a>
+        <a href="/vmodels" class="text-gray-600 hover:text-primary transition-all-300 flex items-center">
+          <i class="fa-solid fa-list mr-2"></i>模型列表
+        </a>
       </nav>
       <button class="md:hidden text-neutral text-xl">
         <i class="fa-solid fa-bars"></i>
@@ -262,18 +265,20 @@
     async function loadModels() {
       try {
         // 模拟API调用获取模型列表
-        const mockModels = ['gpt-4o-mini', 'gpt-3.5-turbo', 'claude-2', 'llama-3'];
+        // const mockModels = ['gpt-4o-mini', 'gpt-4.1', 'gpt-3.5-turbo', 'claude-2', 'llama-3'];
+        // const models = mockModels;
 
         // 实际应用中替换为真实API调用
-        // const response = await fetch('/models');
-        // const models = await response.json();
+        const response = await fetch('/models');
+        const models = await response.json();
 
-        const models = mockModels;
-
-        models.forEach(model => {
+        // 适配 models.html 页面，假设返回格式为 { data: [{id: "gpt-3.5-turbo"}, ...] }
+        // 分组、排序、渲染逻辑可参考 Deno 代码
+        // 这里只是加载到 select 下拉框
+        models?.data?.forEach(model => {
           const option = document.createElement('option');
-          option.value = model;
-          option.textContent = model;
+          option.value = model.id;
+          option.textContent = model.id;
           modelSelect.appendChild(option);
         });
       } catch (error) {
@@ -361,29 +366,29 @@
 
       try {
         // 模拟API调用
-        const mockResponse = {
-          status: 'success',
-          model: model,
-          response: '这是AI模型的响应内容。在实际应用中，这里会显示真实的API返回结果。',
-          tokens: {
-            prompt: 15,
-            completion: 32,
-            total: 47
-          },
-          created: new Date().toISOString()
-        };
+        // const mockResponse = {
+        //   status: 'success',
+        //   model: model,
+        //   response: '这是AI模型的响应内容。在实际应用中，这里会显示真实的API返回结果。',
+        //   tokens: {
+        //     prompt: 15,
+        //     completion: 32,
+        //     total: 47
+        //   },
+        //   created: new Date().toISOString()
+        // };
+        // const result = mockResponse;
 
         // 实际应用中替换为真实API调用
-        // const response = await fetch(`/g4f/${model}`, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({ message: [{ role: 'user', content: message }] }),
-        // });
-        // const result = await response.json();
+        const response = await fetch(`/g4f/${model}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: [{ role: 'user', content: message }] }),
+        });
+        const result = await response.json();
 
-        const result = mockResponse;
 
         // 显示结果
         resultDisplay.textContent = JSON.stringify(result, null, 2);

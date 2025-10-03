@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from ..shared_client import client  # 从 shared_client 导入 client
+from ..services.generator import generate_image_with_client  # 新增导入
 
 gen_image_bp = Blueprint("generate-image", __name__)
 
@@ -8,10 +8,8 @@ def generate_image_post():  # Renamed to avoid conflict
     # 从请求中获取提示词
     prompt = request.json.get("prompt", "a white siamese cat")
 
-    # 使用 g4f 客户端生成图像
-    response = client.images.generate(
-        model="flux", prompt=prompt, response_format="url"
-    )
+    # 调用抽离后的生成图片函数
+    response = generate_image_with_client(prompt)
 
     # 返回生成的图像 URL
     if response and response.data:
