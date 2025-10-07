@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI API Tester</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOSIgaGVpZ2h0PSIxOSIgdmlld0JveD0iMCAwIDI0IDI0Ij48ZyBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMzMzMiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41Ij48cGF0aCBkPSJNMTQuMTcgMjAuODljNC4xODQtLjI3NyA3LjUxNi0zLjY1NyA3Ljc5LTcuOWMuMDUzLS44My4wNTMtMS42OSAwLTIuNTJjLS4yNzQtNC4yNDItMy42MDYtNy42Mi03Ljc5LTcuODk5YTMzIDMzIDAgMCAwLTQuMzQgMGMtNC4xODQuMjc4LTcuNTE2IDMuNjU3LTcuNzkgNy45YTIwIDIwIDAgMCAwIDAgMi41MmMuMSAxLjU0NS43ODMgMi45NzYgMS41ODggNC4xODRjLjQ2Ny44NDUuMTU5IDEuOS0uMzI4IDIuODIzYy0uMzUuNjY1LS41MjYuOTk3LS4zODUgMS4yMzdjLjE0LjI0LjQ1NS4yNDggMS4wODQuMjYzYzEuMjQ1LjAzIDIuMDg0LS4zMjIgMi43NS0uODEzYy4zNzctLjI3OS41NjYtLjQxOC42OTYtLjQzNHMuMzg3LjA5Ljg5OS4zYy40Ni4xOS45OTUuMzA3IDEuNDg1LjM0YzEuNDI1LjA5NCAyLjkxNC4wOTQgNC4zNDIgMFoiLz48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIGQ9Im03LjUgMTVsMS44NDItNS41MjZhLjY5NC42OTQgMCAwIDEgMS4zMTYgMEwxMi41IDE1bTMtNnY2bS03LTJoMyIvPjwvZz48L3N2Zz4=">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -365,30 +366,37 @@
       testButton.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-2"></i> 处理中...';
 
       try {
-        // 模拟API调用
-        // const mockResponse = {
-        //   status: 'success',
-        //   model: model,
-        //   response: '这是AI模型的响应内容。在实际应用中，这里会显示真实的API返回结果。',
-        //   tokens: {
-        //     prompt: 15,
-        //     completion: 32,
-        //     total: 47
-        //   },
-        //   created: new Date().toISOString()
-        // };
-        // const result = mockResponse;
+        const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
 
-        // 实际应用中替换为真实API调用
-        const response = await fetch(`/g4f/${model}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message: [{ role: 'user', content: message }] }),
-        });
-        const result = await response.json();
+        let result;
 
+        if (isLocal) {
+          // 🔹 本地环境使用真实 API 调用
+          const response = await fetch(`/g4f/${model}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: [{ role: 'user', content: message }] }),
+          });
+          result = await response.json();
+        } else {
+          // 🔹 非本地环境使用模拟数据（防止无接口时报错）
+          result = {
+            status: 'success',
+            model: model,
+            response: '这是AI模型的响应内容。在实际应用中，这里会显示真实的API返回结果。',
+            tokens: {
+              prompt: 15,
+              completion: 32,
+              total: 47,
+            },
+            created: new Date().toISOString(),
+          };
+        }
+
+        // ✅ 在此处理结果
+        console.log('API Result:', result);
 
         // 显示结果
         resultDisplay.textContent = JSON.stringify(result, null, 2);
