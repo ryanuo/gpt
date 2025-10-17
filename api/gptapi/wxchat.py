@@ -6,7 +6,9 @@ from wechatpy.exceptions import InvalidSignatureException
 from wechatpy.utils import check_signature
 from flask import request
 from api.config import default_model
+from api.services.generator import generate_completion_with_client, generate_image_with_client
 from api.utils import handle_ai_response
+
 
 token = os.getenv("WX_TOKEN", "default_wxToken")  # 从环境变量获取微信公众号的token，若未设置则使用默认值
 
@@ -38,14 +40,10 @@ def get_message(current_question, messages: List):
     return messages
 
 
-def handle_image_message(msg, engine):
+def handle_image_message(msg):
     # 处理图像生成请求
     prompt = msg.content[3:]
-    response = engine.images.generate(
-        model="flux",
-        prompt=prompt,
-        response_format="url",  # 修改为返回 Base64 编码的图片
-    )
+    response=  generate_image_with_client(prompt)
     if response and response.data:
         url = response.data[0].url
         reply = create_reply(
@@ -57,7 +55,7 @@ def handle_image_message(msg, engine):
         return "Failed to generate image", 500
 
 
-def handle_text_message(msg, engine, ms_lists=None):
+def handle_text_message(msg, ms_lists=None):
     if ms_lists is None:
         ms_lists = []
 
@@ -67,18 +65,12 @@ def handle_text_message(msg, engine, ms_lists=None):
     print(len(messages))
 
     # 使用 g4f 客户端生成对话完成结果
-    completion = engine.chat.completions.create(
-        model=model,
-        messages=messages,
-    )
-
-    # 获取对话完成结果中的内容
-    completion_content = handle_ai_response(completion.choices[0].message.content)
-    messages.append({"role": "assistant", "content": completion_content})
+    completion = generate_completion_with_client(model, messages)
+    messages.append({"role": "assistant", "content": completion})
 
     if len(messages) > 30:
         messages = []
-    return completion_content, messages
+    return completion, messages
 
 
 def subscribe_reply():

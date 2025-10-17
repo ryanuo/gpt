@@ -2,7 +2,6 @@ from flask import Blueprint, request
 from wechatpy import parse_message, create_reply
 from wechatpy.exceptions import InvalidMchIdException
 from ..gptapi.wxchat import handle_text_message, verify_signature, subscribe_reply, handle_image_message
-from ..services.shared_client import client  # 从 shared_client 导入 client
 
 wechat_bp = Blueprint("wechat", __name__)
 Session = {}
@@ -18,10 +17,10 @@ def wechat():
             msg = parse_message(request.data)
             if msg.type == "text":
                 if msg.content.startswith("/i"):
-                    return handle_image_message(msg, client)
+                    return handle_image_message(msg)
                 openid = msg.source
                 reply_content, messages = handle_text_message(
-                    msg, client, Session.get(openid, [])
+                    msg, Session.get(openid, [])
                 )
                 reply = create_reply(reply_content, msg)
                 Session[openid] = messages
