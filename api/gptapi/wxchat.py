@@ -7,7 +7,6 @@ from wechatpy.utils import check_signature
 from flask import request
 from api.config import default_model
 from api.services.generator import generate_completion_with_client, generate_image_with_client
-from api.utils import handle_ai_response
 
 
 token = os.getenv("WX_TOKEN", "default_wxToken")  # 从环境变量获取微信公众号的token，若未设置则使用默认值
@@ -29,7 +28,7 @@ def get_message(current_question, messages: List):
             {
                 "role": "assistant",
                 "content": "你是[今日在学]微信公众号的智能机器人,"
-                "你的主人是Ryan，他的主页是https://ryanuo.cc"
+                "你的主人是RYANUO，他的主页是 https://ryanuo.cc"
                 "请根据用户的问题给出一个回答。",
             },
             {"role": "user", "content": f"{current_question},50-100字回答。"},
