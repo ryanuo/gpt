@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from wechatpy import parse_message, create_reply
 from wechatpy.exceptions import InvalidMchIdException
-from ..gptapi.wxchat import (
+from ..utils.wxchat import (
     handle_text_message,
     verify_signature,
     subscribe_reply,

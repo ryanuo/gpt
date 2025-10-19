@@ -1,43 +1,32 @@
-from os import getenv
-from ..utils import handle_ai_response
 from .shared_client import client
 import requests
+from ..config import api_key, api_url, is_custom_provider
 
 
-def openai_chat_completion(model, messages, temperature=0.7, api_key=None):
+def handle_ai_response(completion_content) -> str:
+    if completion_content.find("chatkf123") != -1:
+        completion_content = "sorry, please retry later...."
+    elif completion_content.find("Upgrade for higher rate limits") != -1:
+        completion_content = "sorry, please retry later...."
+    return completion_content
+
+
+def openai_chat_completion(model, messages, temperature=0.7):
     """
     调用 OpenAI Chat Completions 接口
     """
-    url = (
-        getenv("API_URL") + "/chat/completions"
-    ) or "https://api.openai.com/v1/chat/completions"
-    print("Using API URL:", url)
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key or getenv('API_KEY')}",
+        "Authorization": f"Bearer {api_key}",
     }
     data = {"model": model, "messages": messages, "temperature": temperature}
-    response = requests.post(url, headers=headers, json=data)
-    response.raise_for_status()
-    return response.json()
-
-
-def openai_models_list(api_key=None):
-    """
-    获取 OpenAI 可用模型列表
-    """
-    url = getenv("API_URL") + "/models" or "https://api.openai.com/v1/models"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key or getenv('API_KEY')}",
-    }
-    response = requests.get(url, headers=headers)
+    response = requests.post(api_url, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
 
 
 def select_client():
-    if getenv("PROVIDER") == "custom":
+    if is_custom_provider():
         return openai_chat_completion
 
     return client.chat.completions.create

@@ -1,7 +1,20 @@
+import requests
 from flask import Blueprint, request, jsonify
-from ..post.index import get_url_post_text
 from ..config import default_model
 from ..services.generator import generate_completion_with_client  # 新增导入
+
+
+def get_url_post_text(url):
+    # 获取 JSON 数据
+    data = requests.get("https://ryanuo.cc/sitemap.json").json()
+    # 遍历每个条目
+    for item in data["items"]:
+        # 提取 URL 和文本内容，并存储到字典中
+        if item["url"] == url:
+            return item["text"]
+        return None
+    return None
+
 
 ai_post_bp = Blueprint("ai_post", __name__)
 

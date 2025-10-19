@@ -1,12 +1,13 @@
-from g4f.models import ModelUtils
+from os import getenv
 
-models = ModelUtils()
 
-new_list = {"data": []}
-for model in models.convert:
-    new_list["data"].append({"id": model})
+provider = getenv("PROVIDER", 'g4f') # options: g4f, custom
+default_model = getenv('COMPLETION_MODEL', 'gpt-4o-mini')
+url = getenv("API_URL", "https://api.openai.com/v1")
+api_key = getenv("API_KEY")
+wx_token = getenv("WX_TOKEN", "default_wxToken")
+default_model_url = f"{url}/models"
+api_url = f"{url}/chat/completions"
 
-# 取出模型列表
-g4f_model_list = new_list
-
-default_model = "gpt-4o-mini"
+def is_custom_provider():
+    return provider == 'custom'

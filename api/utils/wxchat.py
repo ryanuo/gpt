@@ -1,15 +1,15 @@
-import os
 from typing import List
-
 from wechatpy import create_reply
 from wechatpy.exceptions import InvalidSignatureException
 from wechatpy.utils import check_signature
 from flask import request
 from api.config import default_model
-from api.services.generator import generate_completion_with_client, generate_image_with_client
+from api.services.generator import (
+    generate_completion_with_client,
+    generate_image_with_client,
+)
+from ..config import wx_token
 
-
-token = os.getenv("WX_TOKEN", "default_wxToken")  # 从环境变量获取微信公众号的token，若未设置则使用默认值
 
 def verify_signature():
     signature = request.args.get("signature", "")
@@ -17,7 +17,7 @@ def verify_signature():
     nonce = request.args.get("nonce", "")
 
     try:
-        check_signature(token, signature, timestamp, nonce)
+        check_signature(wx_token, signature, timestamp, nonce)
     except InvalidSignatureException:
         return "Invalid signature.", 400
 
@@ -42,7 +42,7 @@ def get_message(current_question, messages: List):
 def handle_image_message(msg):
     # 处理图像生成请求
     prompt = msg.content[3:]
-    response=  generate_image_with_client(prompt)
+    response = generate_image_with_client(prompt)
     if response and response.data:
         url = response.data[0].url
         reply = create_reply(
