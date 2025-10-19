@@ -1,18 +1,25 @@
-# GPT Model Interaction and Application Platform
+# GPT Interaction and Application Platform
+
+[![中文][zh-src]][zh-href]
+[![English][en-src]][en-href]
+
+[zh-src]: https://img.shields.io/badge/中文-black.svg
+[zh-href]: ./README.zh-CN.md
+[en-src]: https://img.shields.io/badge/English-black.svg
+[en-href]: ./README.md
 
 ## Project Overview
 
-This project is a Flask-based web application that provides API interfaces and a simple frontend for interacting with GPT models. Users can interact with AI via a WeChat official account or a web interface to chat, generate images, or obtain content summaries.
+This is a Flask-based web application that provides API endpoints and a simple front-end interface for interacting with GPT models. Users can chat with AI, generate images, or get content summaries via a WeChat official account or web interface.
 
-Main features include:
-- **Text conversation with GPT models**: Supports multi-turn conversations, simulating human-like chats.
-- **Image generation based on user input**: Generates high-quality images using AI models.
+## Key Features
+- **Text conversation with GPT models**: Supports multi-turn conversations for human-like chat experiences.
+- **Image generation from user input**: Generate high-quality images using AI models.
 - **WeChat official account message handling**: Supports auto-replies, image generation, and other features.
-- **Content summarization**: Extracts key information from long texts or web pages to generate concise summaries.
+- **Content summarization**: Extract key information from long texts or web pages and generate concise summaries.
+- **Custom AI service providers**: Supports custom AI providers, including OpenAI-compatible APIs.
 
-This project is suitable for individual developers, enterprises, or researchers to quickly build applications based on GPT models.
-
-## Usage Instructions
+## Usage
 
 ### Environment Setup
 
@@ -21,103 +28,59 @@ This project is suitable for individual developers, enterprises, or researchers 
    git clone https://github.com/ryanuo/gpt.git
    cd gpt
    ```
-
+   
 2. Install dependencies:
+
    ```bash
    pip install -r requirements.txt
    ```
 
 3. Configure environment variables:
-   - Create a `.env` file and set the following variables:
-     - `WX_TOKEN`: Token for the WeChat official account, used for message verification.
-     - `OPENAI_API_KEY`: API key for the GPT model (if required).
-   - Ensure other necessary environment variables are correctly configured, such as database connection information (if applicable).
+
+   ```bash
+   cp .env.example .env
+   ```
 
 4. Start the service:
+
    ```bash
    python -m api.index
    ```
 
-5. Deploy to Vercel:
-   - Ensure the `vercel.json` configuration is correct, including routes and environment variables.
-   - Deploy using the Vercel CLI:
-     ```bash
-     vercel
-     ```
+### Environment Variables
 
-### API Usage
+| Variable Name      | Description                                                            | Example Value                         | Required         | Notes                                                                           |
+| ------------------ | ---------------------------------------------------------------------- | ------------------------------------- | ---------------- | ------------------------------------------------------------------------------- |
+| `WX_TOKEN`         | WeChat official account token, used for message signature verification | `wechat_token_123456`                 | Yes (for WeChat) | Only needed if using WeChat message handling                                    |
+| `OPENAI_API_KEY`   | API key for GPT models                                                 | `sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` | No               | Required when using a custom OpenAI-compatible API (`PROVIDER=custom`)          |
+| `PROVIDER`         | Specify AI service provider type                                       | `custom`                              | No               | Default is empty (uses `g4f` client default). `custom` means using a custom API |
+| `COMPLETION_MODEL` | Default text generation model                                          | `gpt-4o-mini`, `gpt-3.5-turbo`        | No               | Defaults to `default_model` in `api/config.py` (`gpt-4o-mini`)                  |
+| `API_KEY`          | Authentication key for custom AI service                               | `custom_api_key_789`                  | No               | Required if `PROVIDER=custom`, similar to `OPENAI_API_KEY`                      |
+| `API_URL`          | API endpoint URL for custom AI service (OpenAI-compatible)             | `https://api.example.com/v1`          | No               | Required if `PROVIDER=custom`, defaults to OpenAI official API                  |
 
-- **Conversation API**:
-  - Path: `/g4f/<model>`
-  - Method: POST
-  - Parameters:
-    - `message`: User input text.
-    - `context` (optional): Conversation context.
-  - Returns: Response generated by the GPT model.
+### Additional Notes
 
-- **Image Generation**:
-  - Path: `/generate-image`
-  - Method: POST
-  - Parameters:
-    - `prompt`: Text describing the image content.
-  - Returns: URL of the generated image.
+* Environment variables should be configured in the project root `.env` file (referenced in `.gitignore` to prevent leaks).
+* Example setups:
 
-- **WeChat Official Account**:
-  - Path: `/wechat`
-  - Method: POST
-  - Functionality: Handles messages from the WeChat official account, including text replies and image generation.
+  * Using default `g4f` service: no need to set `PROVIDER`, `API_KEY`, `API_URL`; optionally set `COMPLETION_MODEL`.
+  * Using a custom API: set `PROVIDER=custom`, `API_KEY`, `API_URL`; optionally set `COMPLETION_MODEL`.
 
-- **Content Summarization**:
-  - Path: `/ai-post`
-  - Method: POST
-  - Parameters:
-    - `url`: URL of the webpage to summarize.
-  - Returns: A concise summary of the webpage content.
+## API Endpoints
 
-### Project Structure
-
-- `api/`: Backend API code.
-- `static/`: Frontend static files (HTML, CSS, JS).
-- `templates/`: Frontend template files.
-- `requirements.txt`: Python dependency list.
-- `vercel.json`: Vercel deployment configuration.
-
-## Core Principles
-
-1. **GPT Model Interaction**:
-   - Uses the `g4f` client to interact with GPT models, supporting various models (e.g., `gpt-4o-mini`).
-   - Provides flexible interfaces, supporting custom contexts and model selection.
-
-2. **WeChat Official Account Integration**:
-   - Uses the `wechatpy` library to handle message signature verification, message parsing, and replies.
-   - Supports text messages, image generation requests, and other custom features.
-
-3. **Image Generation**:
-   - Calls the image generation interface of the `g4f` client to generate images based on user input prompts.
-   - Returns the URL of the image for user download or preview.
-
-4. **Content Summarization**:
-   - Fetches webpage content from a specified URL and generates a concise summary using the GPT model.
-   - Supports multilingual content processing.
-
-## FAQ
-
-1. **How to switch GPT models?**
-   - Call the `/models` API to get a list of supported models.
-   - Specify the desired model name in the request.
-
-2. **How to debug the WeChat official account functionality?**
-   - Use the WeChat official platform's developer tools for testing.
-   - Check if `WX_TOKEN` is correctly configured.
-
-3. **What to do if image generation fails?**
-   - Ensure the `g4f` client is working properly.
-   - Check if the input prompt meets the requirements.
+| API Type                    | Path              | Method | Parameters                                                                                                                                                                                                                                    | Response                                                                                                                              |
+| --------------------------- | ----------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Conversation**            | `/g4f/<model>`    | POST   | - `message`: user input text<br>- `context` (optional): conversation context (format `[{"role":"user","content":"xxx"},{"role":"assistant","content":"xxx"}]`)<br>*Note: Model specified via `<model>` path; available models via `/vmodels`* | JSON containing `response` field (model-generated reply)                                                                              |
+| **Image Generation**        | `/generate-image` | POST   | - `prompt`: description of the image (e.g., "Cyberpunk city night scene")<br>*Note: uses `flux` model*                                                                                                                                        | JSON containing `image_url` field (URL to access generated image)                                                                     |
+| **WeChat Official Account** | `/wechat`         | POST   | Automatically parses WeChat server push messages (includes `signature`, `timestamp`, `nonce`, XML content, etc.)<br>*Note: uses default model in `api/config.py`, `gpt-4o-mini` by default*                                                   | Returns XML message reply according to WeChat specifications (text or rich media with image URLs)                                     |
+| **Content Summarization**   | `/ai-post`        | POST   | - `url`: URL of webpage to summarize (e.g., `https://example.com/article`)<br>*Note: uses default model in `api/config.py`, `gpt-4o-mini` by default*                                                                                         | JSON containing `summary` field (concise summary of key content, ~50-200 words)                                                       |
+| **Model List**              | `/vmodels`        | GET    | None<br>*Note: returns only supported model list, no model invocation*                                                                                                                                                                        | JSON grouped by type, e.g.:<br>`{ "GPT Series": ["gpt-4o-mini", "gpt-3.5-turbo"], "Other Models": ["claude-3-haiku", "gemini-pro"] }` |
 
 ## References
 
-- [Flask Official Documentation](https://flask.palletsprojects.com/)
-- [wechatpy Documentation](https://wechatpy.readthedocs.io/)
-- [Vercel Official Documentation](https://vercel.com/docs)
-- [OpenAI GPT Models](https://github.com/xtekky/gpt4free)
-- [Python Official Documentation](https://docs.python.org/)
+* [wechatpy Documentation](https://wechatpy.readthedocs.io/)
+* [OpenAI GPT Models](https://github.com/xtekky/gpt4free)
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](./LICENSE.md) for details.
