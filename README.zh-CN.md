@@ -19,6 +19,11 @@
 - **内容摘要**：从长文本或网页中提取关键信息，生成简洁摘要。
 - **自定义AI服务的供应商**: 支持自定义AI服务供应商，如OpenAI兼容的API。
 
+## 一键部署
+
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ryanuo/gpt)
+**注：需要根据实际使用情况填写环境变量**
+
 ## 使用说明
 
 ### 环境设置

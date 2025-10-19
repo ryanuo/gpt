@@ -19,6 +19,12 @@ This is a Flask-based web application that provides API endpoints and a simple f
 - **Content summarization**: Extract key information from long texts or web pages and generate concise summaries.
 - **Custom AI service providers**: Supports custom AI providers, including OpenAI-compatible APIs.
 
+## One-Click Deployment
+
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ryanuo/gpt)  
+**Note: You need to configure the environment variables according to your actual usage.**
+
+
 ## Usage
 
 ### Environment Setup
