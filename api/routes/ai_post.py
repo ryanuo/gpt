@@ -12,8 +12,6 @@ def get_url_post_text(url):
         # 提取 URL 和文本内容，并存储到字典中
         if item["url"] == url:
             return item["text"]
-        return None
-    return None
 
 
 ai_post_bp = Blueprint("ai_post", __name__)
