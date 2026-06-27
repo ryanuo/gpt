@@ -23,7 +23,7 @@ def ai_post():
         return jsonify({"error": "Invalid url"})
 
     text = get_url_post_text(url)
-    is_chinese = "/zh/" in url
+    is_chinese = "/en/" not in url
     assistant_content = (
         "概括以下内容,50个字数左右,不要超出文字字数限制"
         if is_chinese
