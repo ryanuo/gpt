@@ -13,11 +13,10 @@ def get_url_post_text(url):
     for item in data["items"]:
         # 提取 URL 和文本内容，并存储到字典中
         if item["url"] == url:
-            summary = summarize(
+            return summarize(
                 compress_markdown(item["text"]),
                 ratio=0.3,
             )
-            return summary
 
 
 ai_post_bp = Blueprint("ai_post", __name__)
@@ -41,4 +40,6 @@ def ai_post():
         {"role": "user", "content": text},
     ]
     completion_content = generate_completion_with_client(default_model, message)
-    return jsonify({"data": completion_content, "status_code": 200, "model": default_model})
+    return jsonify(
+        {"data": completion_content, "status_code": 200, "model": default_model}
+    )
