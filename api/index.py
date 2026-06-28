@@ -1,10 +1,18 @@
 from flask import Flask, render_template
 from flask_cors import CORS
+
 from .routes.models import models_bp
 from .routes.g4f import g4f_bp
 from .routes.ai_post import ai_post_bp
 from .routes.wechat import wechat_bp
 from .routes.gen_image import gen_image_bp  # Renamed to avoid conflict
+
+# 本地测试使用
+# from api.routes.models import models_bp
+# from api.routes.g4f import g4f_bp
+# from api.routes.ai_post import ai_post_bp
+# from api.routes.wechat import wechat_bp
+# from api.routes.gen_image import gen_image_bp  # Renamed to avoid conflict
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "https://ryanuo.cc"}})

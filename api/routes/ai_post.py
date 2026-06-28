@@ -13,9 +13,11 @@ def get_url_post_text(url):
     for item in data["items"]:
         # 提取 URL 和文本内容，并存储到字典中
         if item["url"] == url:
-            return summarize(
-                compress_markdown(item["text"]),
-                ratio=0.3,
+            return compress_markdown(
+                summarize(
+                    item["text"],
+                    ratio=0.3,
+                )
             )
 
 
