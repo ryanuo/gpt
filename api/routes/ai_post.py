@@ -18,8 +18,6 @@ def get_url_post_text(url):
                 ratio=0.3,
             )
             return summary
-        return None
-    return None
 
 
 ai_post_bp = Blueprint("ai_post", __name__)
