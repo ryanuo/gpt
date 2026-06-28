@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify
 from ..config import default_model
 from ..services.generator import generate_completion_with_client  # 新增导入
 from ..utils.markdown import compress_markdown
+from summa.summarizer import summarize
 
 
 def get_url_post_text(url):
@@ -12,10 +13,17 @@ def get_url_post_text(url):
     for item in data["items"]:
         # 提取 URL 和文本内容，并存储到字典中
         if item["url"] == url:
-            return compress_markdown(item["text"])
+            summary = summarize(
+                compress_markdown(item["text"]),
+                ratio=0.3,
+            )
+            return summary
+        return None
+    return None
 
 
 ai_post_bp = Blueprint("ai_post", __name__)
+
 
 @ai_post_bp.route("/ai-post", methods=["POST"])
 def ai_post():

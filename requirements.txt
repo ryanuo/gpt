@@ -1,5 +1,7 @@
 requests~=2.31.0
 Flask~=3.0.2
-g4f
-flask_cors
+g4f~=0.6.4.2
+flask_cors~=6.0.0
 wechatpy~=1.8.18
+Markdown~=3.7
+summa~=1.2.0
