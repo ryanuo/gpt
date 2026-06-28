@@ -2,6 +2,7 @@ import requests
 from flask import Blueprint, request, jsonify
 from ..config import default_model
 from ..services.generator import generate_completion_with_client  # 新增导入
+from ..utils.markdown import compress_markdown
 
 
 def get_url_post_text(url):
@@ -11,7 +12,7 @@ def get_url_post_text(url):
     for item in data["items"]:
         # 提取 URL 和文本内容，并存储到字典中
         if item["url"] == url:
-            return item["text"]
+            return compress_markdown(item["text"])
 
 
 ai_post_bp = Blueprint("ai_post", __name__)
