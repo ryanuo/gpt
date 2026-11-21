@@ -1,7 +1,7 @@
 from os import getenv
 
 
-provider = getenv("PROVIDER", 'g4f') # options: g4f, custom
+provider = getenv("PROVIDER", 'g4f') # options: g4f, custom, static（static 只影响 /ai-post，其余接口仍走 g4f）
 default_model = getenv('COMPLETION_MODEL', 'auto')
 url = getenv("API_URL", "https://api.openai.com/v1")
 api_key = getenv("API_KEY")
@@ -14,4 +14,5 @@ def is_custom_provider():
     return provider == 'custom'
 
 def is_static_mode():
-    return ai_post_mode == 'static'
+    # PROVIDER=static 为主开关；AI_POST_MODE 保留兼容
+    return provider == 'static' or ai_post_mode == 'static'
