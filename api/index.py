@@ -9,9 +9,11 @@ _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-# g4f 8.9.3 在导入时即写 ~/.g4f/cache（云端只读家目录会报 Read-only file system），
-# 未显式配置时把缓存重定向到可写临时目录（Vercel 沙箱中 /tmp 可写）
+# g4f 8.9.3 会向 ~/.g4f 写多处缓存/用量数据（provider_router 模型缓存、
+# cookies/.usage 用量日志等），云端只读家目录会报 Read-only file system；
+# 未显式配置时把这些目录统一重定向到可写临时目录（Vercel 沙箱中 /tmp 可写）
 _g4f_cache = os.path.join(tempfile.gettempdir(), "g4f-cache")
+os.environ.setdefault("G4F_CONFIG_DIR", _g4f_cache)
 os.environ.setdefault("G4F_CACHE_DIR", _g4f_cache)
 os.environ.setdefault(
     "G4F_PROVIDER_MODELS_CACHE_FILE",
