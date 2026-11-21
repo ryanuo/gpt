@@ -1,9 +1,16 @@
+import json
+from pathlib import Path
+
 import requests
 from flask import Blueprint, request, jsonify
-from ..config import default_model
+from ..config import default_model, is_static_mode
 from ..services.generator import generate_completion_with_client  # 新增导入
 from ..utils.markdown import compress_markdown
 from summa.summarizer import summarize
+
+
+# 静态概括文件：{"<文章URL>": "概括文本"}，随仓库部署，云端只读
+SUMMARIES_FILE = Path(__file__).resolve().parent.parent.parent / "summaries.json"
 
 
 def get_url_post_text(url):
@@ -21,6 +28,16 @@ def get_url_post_text(url):
             )
 
 
+def load_static_summary(url):
+    """从 summaries.json 读取文章概括，未命中返回 None。"""
+    try:
+        with open(SUMMARIES_FILE, "r", encoding="utf-8") as f:
+            summaries = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+    return summaries.get(url)
+
+
 ai_post_bp = Blueprint("ai_post", __name__)
 
 
@@ -29,6 +46,13 @@ def ai_post():
     url = request.headers.get("Refererurl")
     if not url:
         return jsonify({"error": "Invalid url"})
+
+    if is_static_mode():
+        # 静态模式：直接返回 summaries.json 中预生成的文章概括，不调用 g4f
+        content = load_static_summary(url)
+        if content is None:
+            return jsonify({"error": "Summary not found", "status_code": 404})
+        return jsonify({"data": content, "status_code": 200, "model": "static"})
 
     text = get_url_post_text(url)
     is_chinese = "/en/" not in url
